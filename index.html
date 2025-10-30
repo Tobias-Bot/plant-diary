@@ -6,7 +6,32 @@
     <title>Дневник растений</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlTb8Bi6UxC5N8K619W9JcYVE4iPq0Y6o",
+            authDomain: "plant-diary-e1fe0.firebaseapp.com",
+            projectId: "plant-diary-e1fe0",
+            storageBucket: "plant-diary-e1fe0.firebasestorage.app",
+            messagingSenderId: "486577721043",
+            appId: "1:486577721043:web:93776742face0a4246ce26",
+            databaseURL: "https://plant-diary-e1fe0-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        console.log("Firebase initialized successfully");
+    </script>
+
     <style>
+        /* Все стили остаются без изменений */
         :root {
             --primary: #a8d5ba;
             --secondary: #f9e6cf;
@@ -32,7 +57,7 @@
             color: var(--text);
             line-height: 1.6;
             transition: all 0.3s ease;
-            padding-bottom: 120px; /* Для плавающей панели вкладок */
+            padding-bottom: 120px;
         }
 
         .container {
@@ -41,7 +66,6 @@
             padding: 20px;
         }
 
-        /* Узкий header с кнопкой настроек */
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             padding: 10px 0;
@@ -54,9 +78,16 @@
 
         .header-content {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             padding: 0 20px;
+        }
+
+        .app-title {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .settings-btn {
@@ -91,10 +122,9 @@
             color: var(--dark);
         }
 
-        /* Плавающая панель вкладок */
         .floating-tabs {
             position: fixed;
-            bottom: 10%; /* 10% от нижней границы экрана */
+            bottom: 10%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -128,7 +158,6 @@
             background-color: var(--secondary);
         }
 
-        /* Центральная круглая кнопка */
         .center-add-btn {
             width: 60px;
             height: 60px;
@@ -160,7 +189,6 @@
             display: block;
         }
 
-        /* Внутренние вкладки для "Все записи" */
         .entries-tabs {
             display: flex;
             margin-bottom: 20px;
@@ -214,6 +242,10 @@
             margin-bottom: 25px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
@@ -221,7 +253,6 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        /* Карточка записи в стиле Pinterest */
         .entries-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -268,7 +299,6 @@
             position: relative;
         }
 
-        /* Увеличенная кнопка меню */
         .entry-menu-btn {
             background: none;
             border: none;
@@ -323,50 +353,52 @@
             background-color: var(--secondary);
         }
 
-        /* Список данных в карточке записи */
-        .entry-details-list {
+        .entry-details-grid {
             padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
         }
 
         .entry-detail-item {
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 5px;
         }
 
         .detail-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
             flex-shrink: 0;
-            margin-top: 2px;
         }
 
         .detail-content {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .detail-label {
             font-weight: 600;
             color: var(--dark);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             margin-bottom: 2px;
         }
 
         .detail-value {
             color: var(--text);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.4;
         }
 
         .status-emoji {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
         }
 
         .form-group {
@@ -407,7 +439,6 @@
             gap: 8px;
         }
 
-        /* Увеличенные чекбоксы */
         .checkbox-item input[type="checkbox"] {
             width: 20px;
             height: 20px;
@@ -501,6 +532,26 @@
             font-size: 0.9rem;
         }
 
+        .sort-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .sort-btn:hover {
+            background: #95c9aa;
+            transform: translateY(-2px);
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -512,26 +563,45 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 15px;
             padding: 20px;
-            color: white;
+            color: #2d4a43; /* Темный контрастный цвет текста */
             text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+            color: #2d4a43; /* Темный контрастный цвет иконок */
         }
 
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            margin: 10px 0;
+            margin: 5px 0;
+            color: #2d4a43; /* Темный контрастный цвет значений */
         }
 
         .stat-label {
             font-size: 1rem;
             opacity: 0.9;
+            color: #2d4a43; /* Темный контрастный цвет текста */
         }
 
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 100%;
         }
 
         .empty-state i {
@@ -540,7 +610,6 @@
             color: var(--primary);
         }
 
-        /* Стили для таблиц в разделах жизненного цикла и размножения */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -578,7 +647,6 @@
             justify-content: flex-end;
         }
 
-        /* Стили для графиков */
         .charts-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -608,7 +676,6 @@
             height: 300px;
         }
 
-        /* Стили для списка растений */
         .plants-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -635,7 +702,43 @@
             gap: 5px;
         }
 
-        /* Адаптация для мобильных устройств */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        .plant-filter {
+            margin-bottom: 20px;
+        }
+
+        .plant-filter select {
+            max-width: 300px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -644,6 +747,10 @@
             header {
                 padding: 8px 0;
                 margin-bottom: 25px;
+            }
+            
+            .app-title {
+                font-size: 1.2rem;
             }
             
             .floating-tabs {
@@ -658,7 +765,7 @@
             }
             
             .tab span {
-                display: none; /* Скрываем текст вкладок на мобильных */
+                display: none;
             }
             
             .center-add-btn {
@@ -686,6 +793,10 @@
             
             .entries-tab {
                 margin-bottom: 5px;
+            }
+            
+            .entries-tab span {
+                display: none;
             }
             
             .stats {
@@ -722,6 +833,11 @@
                 display: block;
                 overflow-x: auto;
             }
+            
+            .entry-details-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -739,21 +855,17 @@
                 bottom: 3%;
             }
             
-            .entry-details-list {
+            .entry-details-grid {
+                grid-template-columns: 1fr;
                 gap: 8px;
-            }
-            
-            .entry-detail-item {
-                flex-direction: column;
-                gap: 5px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Узкий header с кнопкой настроек -->
     <header>
         <div class="header-content">
+            <div class="app-title">Дневник растений</div>
             <button class="settings-btn" id="header-settings-btn">
                 <i class="fas fa-cog"></i>
             </button>
@@ -761,41 +873,40 @@
     </header>
 
     <div class="container">
-        <!-- Панель обзора -->
         <div id="dashboard" class="content-section active">
             <h2>Обзор растений</h2>
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-label">Всего растений</div>
-                    <div class="stat-value" id="total-plants">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Активных записей</div>
-                    <div class="stat-value" id="total-entries">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Растения в лечении</div>
-                    <div class="stat-value" id="sick-plants">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Последняя активность</div>
-                    <div class="stat-value" id="last-activity">-</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Последние записи</h3>
-                <div id="recent-entries">
-                    <div class="empty-state">
-                        <i class="fas fa-seedling"></i>
-                        <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
+                    <div class="stat-icon">
+                        <i class="fas fa-leaf"></i>
                     </div>
+                    <div class="stat-value" id="total-plants">0</div>
+                    <div class="stat-label">Всего растений</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-value" id="total-entries">0</div>
+                    <div class="stat-label">Активных записей</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="stat-value" id="sick-plants">0</div>
+                    <div class="stat-label">Растения в лечении</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-value" id="last-activity">-</div>
+                    <div class="stat-label">Последняя активность</div>
                 </div>
             </div>
         </div>
 
-        <!-- Мои растения -->
         <div id="my-plants" class="content-section">
             <h2>Мои растения</h2>
             <div class="card">
@@ -823,7 +934,6 @@
             </div>
         </div>
 
-        <!-- Добавление новой записи -->
         <div id="add-entry" class="content-section">
             <h2>Новая запись о растении</h2>
             <div class="card">
@@ -919,7 +1029,6 @@
             </div>
         </div>
 
-        <!-- Просмотр всех записей -->
         <div id="entries" class="content-section">
             <h2>Все записи</h2>
             
@@ -936,10 +1045,19 @@
                     <i class="fas fa-dna"></i>
                     <span>Размножение</span>
                 </div>
+                <div class="entries-tab" data-tab="fertilizers">
+                    <i class="fas fa-flask"></i>
+                    <span>Удобрения</span>
+                </div>
             </div>
             
-            <!-- Вкладка "Все" -->
             <div id="all-entries-tab" class="entries-content active">
+                <div class="plant-filter">
+                    <label for="plant-filter-select">Фильтр по растению:</label>
+                    <select id="plant-filter-select">
+                        <option value="">Все растения</option>
+                    </select>
+                </div>
                 <div class="card">
                     <div class="entries-grid" id="all-entries-list">
                         <div class="empty-state">
@@ -951,7 +1069,6 @@
                 </div>
             </div>
             
-            <!-- Вкладка "Жизненный цикл" -->
             <div id="lifecycle-tab" class="entries-content">
                 <div class="card">
                     <h3>Жизненный цикл растений</h3>
@@ -967,14 +1084,13 @@
                             <tr>
                                 <th>Дата приобретения</th>
                                 <th>Стоимость при покупке</th>
-                                <th>Текущая рыночная цена</th>
                                 <th>Общая стоимость владения</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody id="lifecycle-table-body">
                             <tr>
-                                <td colspan="5" class="empty-state">
+                                <td colspan="4" class="empty-state">
                                     <p>Нет данных о жизненном цикле растений</p>
                                 </td>
                             </tr>
@@ -983,7 +1099,6 @@
                 </div>
             </div>
             
-            <!-- Вкладка "Размножение и селекция" -->
             <div id="propagation-tab" class="entries-content">
                 <div class="card">
                     <h3>Размножение растений</h3>
@@ -999,15 +1114,44 @@
                             <tr>
                                 <th>Метод размножения</th>
                                 <th>Дата начала</th>
-                                <th>Процент успеха</th>
                                 <th>Материнское растение</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody id="propagation-table-body">
                             <tr>
-                                <td colspan="5" class="empty-state">
+                                <td colspan="4" class="empty-state">
                                     <p>Нет данных о размножении растений</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="fertilizers-tab" class="entries-content">
+                <div class="card">
+                    <h3>Удобрения</h3>
+                    
+                    <div class="form-group">
+                        <button id="add-fertilizer-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Добавить запись
+                        </button>
+                    </div>
+                    
+                    <table class="data-table" id="fertilizers-table">
+                        <thead>
+                            <tr>
+                                <th>Удобрение</th>
+                                <th>Эффект</th>
+                                <th>Растение</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fertilizers-table-body">
+                            <tr>
+                                <td colspan="4" class="empty-state">
+                                    <p>Нет данных об удобрениях</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -1016,14 +1160,12 @@
             </div>
         </div>
 
-        <!-- Анализ (графики) -->
         <div id="analysis" class="content-section">
             <h2>Анализ состояния растений</h2>
             <div class="charts-container">
                 <div class="chart-card">
                     <div class="chart-title">
-                        <span style="color: #27ae60">🟢</span> Здоровье vs 
-                        <span style="color: #e74c3c">🔴</span> Проблемы
+                        <i class="fas fa-heartbeat"></i> Здоровье vs Проблемы
                     </div>
                     <div class="chart-wrapper">
                         <canvas id="healthChart"></canvas>
@@ -1032,8 +1174,7 @@
                 
                 <div class="chart-card">
                     <div class="chart-title">
-                        <span style="color: #27ae60">🟢</span> Активность ухода vs 
-                        <span style="color: #e74c3c">🔴</span> Проблемы
+                        <i class="fas fa-tasks"></i> Активность ухода
                     </div>
                     <div class="chart-wrapper">
                         <canvas id="activityChart"></canvas>
@@ -1042,7 +1183,6 @@
             </div>
         </div>
 
-        <!-- Настройки -->
         <div id="settings" class="content-section">
             <h2>Настройки</h2>
             <div class="card">
@@ -1081,7 +1221,6 @@
         </div>
     </div>
 
-    <!-- Плавающая панель вкладок с центральной кнопкой -->
     <div class="floating-tabs">
         <div class="tab active" data-tab="dashboard">
             <i class="fas fa-seedling"></i>
@@ -1105,15 +1244,29 @@
     </div>
 
     <script>
-        // Глобальные переменные для графиков
+        // Глобальные переменные
         let healthChart = null;
         let activityChart = null;
-        
+        let dataLoaded = {
+            plants: false,
+            entries: false,
+            lifecycle: false,
+            propagation: false,
+            fertilizers: false
+        };
+
+        // Глобальные переменные для хранения данных
+        let plantsData = {};
+        let entriesData = {};
+        let lifecycleData = {};
+        let propagationData = {};
+        let fertilizersData = {};
+
+        // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация приложения
             initApp();
             
-            // Обработчики вкладок
+            // Обработчики событий
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const targetTab = this.getAttribute('data-tab');
@@ -1121,12 +1274,10 @@
                 });
             });
             
-            // Обработчик кнопки настроек в header
             document.getElementById('header-settings-btn').addEventListener('click', function() {
                 switchTab('settings');
             });
             
-            // Обработчики внутренних вкладок "Все записи"
             document.querySelectorAll('.entries-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const targetTab = this.getAttribute('data-tab');
@@ -1134,13 +1285,13 @@
                 });
             });
             
-            // Обработчик центральной кнопки
             document.getElementById('center-add-btn').addEventListener('click', function() {
                 switchTab('add-entry');
-                loadPlantsToSelect();
+                if (!dataLoaded.plants) {
+                    loadPlantsToSelect();
+                }
             });
             
-            // Обработчики эмодзи
             document.querySelectorAll('.emoji-option').forEach(option => {
                 option.addEventListener('click', function() {
                     document.querySelectorAll('.emoji-option').forEach(opt => {
@@ -1151,24 +1302,20 @@
                 });
             });
             
-            // Обработчик формы добавления растения
             document.getElementById('add-plant-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 addNewPlant();
             });
             
-            // Обработчик формы записи
             document.getElementById('plant-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 savePlantEntry();
             });
             
-            // Обработчик отмены редактирования
             document.getElementById('cancel-edit').addEventListener('click', function() {
                 cancelEdit();
             });
             
-            // Обработчики кнопок удаления
             document.getElementById('delete-week').addEventListener('click', function() {
                 if (confirm('Удалить все записи за последнюю неделю?')) {
                     deleteEntriesByTime('week');
@@ -1187,7 +1334,6 @@
                 }
             });
             
-            // Обработчики кнопок добавления записей в таблицы
             document.getElementById('add-lifecycle-btn').addEventListener('click', function() {
                 addLifecycleEntry();
             });
@@ -1196,12 +1342,18 @@
                 addPropagationEntry();
             });
             
-            // Обработчик кнопки добавления на рабочий стол
+            document.getElementById('add-fertilizer-btn').addEventListener('click', function() {
+                addFertilizerEntry();
+            });
+            
             document.getElementById('add-to-home-screen').addEventListener('click', function() {
                 addToHomeScreen();
             });
             
-            // Закрытие меню записей при клике вне меню
+            document.getElementById('plant-filter-select').addEventListener('change', function() {
+                filterEntriesByPlant(this.value);
+            });
+            
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.entry-actions')) {
                     document.querySelectorAll('.entry-menu').forEach(menu => {
@@ -1210,34 +1362,97 @@
                 }
             });
             
-            // Установка текущей даты по умолчанию
+            // Установка текущей даты
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('plant-date').value = today;
+
+            // Настройка слушателей реального времени для автоматического обновления
+            setupRealtimeListeners();
         });
+
+        // Настройка слушателей реального времени для Firebase
+        function setupRealtimeListeners() {
+            // Слушатель для растений
+            database.ref('plants').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    plantsData = snapshot.val();
+                    updatePlantsDisplay();
+                    updatePlantsSelect();
+                    updatePlantFilter();
+                    updateDashboard();
+                } else {
+                    plantsData = {};
+                    updatePlantsDisplay();
+                    updatePlantsSelect();
+                    updatePlantFilter();
+                    updateDashboard();
+                }
+            });
+            
+            // Слушатель для записей
+            database.ref('entries').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    entriesData = snapshot.val();
+                    updateEntriesDisplay();
+                    updateDashboard();
+                    // Обновляем графики если открыта вкладка анализа
+                    if (document.getElementById('analysis').classList.contains('active')) {
+                        updateCharts();
+                    }
+                } else {
+                    entriesData = {};
+                    updateEntriesDisplay();
+                    updateDashboard();
+                }
+            });
+            
+            // Слушатели для дополнительных данных
+            database.ref('lifecycle').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    lifecycleData = snapshot.val();
+                    updateLifecycleDisplay();
+                } else {
+                    lifecycleData = {};
+                    updateLifecycleDisplay();
+                }
+            });
+            
+            database.ref('propagation').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    propagationData = snapshot.val();
+                    updatePropagationDisplay();
+                } else {
+                    propagationData = {};
+                    updatePropagationDisplay();
+                }
+            });
+            
+            database.ref('fertilizers').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    fertilizersData = snapshot.val();
+                    updateFertilizersDisplay();
+                } else {
+                    fertilizersData = {};
+                    updateFertilizersDisplay();
+                }
+            });
+        }
         
-        // Функции приложения
         function initApp() {
-            // Загрузка данных
-            loadPlants();
-            loadEntries();
-            updateDashboard();
-            loadLifecycleData();
-            loadPropagationData();
+            console.log("Приложение инициализировано");
+            // Данные автоматически загружаются через слушатели реального времени
         }
         
         function switchTab(tabName) {
-            // Скрыть все вкладки
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Показать выбранную вкладку
             const targetSection = document.getElementById(tabName);
             if (targetSection) {
                 targetSection.classList.add('active');
             }
             
-            // Обновить активную вкладку
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1247,33 +1462,40 @@
                 activeTab.classList.add('active');
             }
             
-            // Обновить данные, если необходимо
-            if (tabName === 'dashboard' || tabName === 'entries') {
-                loadEntries();
-                updateDashboard();
-            } else if (tabName === 'my-plants') {
-                loadPlants();
-            } else if (tabName === 'add-entry') {
-                loadPlantsToSelect();
-            } else if (tabName === 'analysis') {
-                // Обновляем графики при переходе на вкладку анализа
-                setTimeout(updateCharts, 100);
+            // Обновляем данные при переходе на вкладку
+            switch(tabName) {
+                case 'my-plants':
+                    updatePlantsDisplay();
+                    break;
+                case 'entries':
+                    updateEntriesDisplay();
+                    updatePlantFilter();
+                    break;
+                case 'analysis':
+                    updateCharts();
+                    break;
+                case 'lifecycle':
+                    updateLifecycleDisplay();
+                    break;
+                case 'propagation':
+                    updatePropagationDisplay();
+                    break;
+                case 'fertilizers':
+                    updateFertilizersDisplay();
+                    break;
             }
         }
         
         function switchEntriesTab(tabName) {
-            // Скрыть все внутренние вкладки
             document.querySelectorAll('.entries-content').forEach(content => {
                 content.classList.remove('active');
             });
             
-            // Показать выбранную вкладку
             const targetContent = document.getElementById(`${tabName}-tab`);
             if (targetContent) {
                 targetContent.classList.add('active');
             }
             
-            // Обновить активную вкладку
             document.querySelectorAll('.entries-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1282,406 +1504,27 @@
             if (activeTab) {
                 activeTab.classList.add('active');
             }
-        }
-        
-        // Функции для работы с таблицами жизненного цикла
-        function loadLifecycleData() {
-            const lifecycleData = JSON.parse(localStorage.getItem('plantLifecycle')) || [];
-            const tableBody = document.getElementById('lifecycle-table-body');
             
-            tableBody.innerHTML = '';
-            
-            if (lifecycleData.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="empty-state">
-                            <p>Нет данных о жизненном цикле растений</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            lifecycleData.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${entry.purchaseDate}</td>
-                    <td>${entry.purchasePrice} руб.</td>
-                    <td>${entry.currentPrice} руб.</td>
-                    <td>${entry.totalCost} руб.</td>
-                    <td class="table-actions">
-                        <button class="btn btn-danger btn-sm delete-lifecycle" data-index="${index}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-            
-            // Добавляем обработчики удаления
-            document.querySelectorAll('.delete-lifecycle').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = this.getAttribute('data-index');
-                    deleteLifecycleEntry(index);
-                });
-            });
-        }
-        
-        function addLifecycleEntry() {
-            const purchaseDate = prompt('Введите дату приобретения:');
-            if (!purchaseDate) return;
-            
-            const purchasePrice = prompt('Введите стоимость при покупке (руб.):');
-            if (!purchasePrice) return;
-            
-            const currentPrice = prompt('Введите текущую рыночную цену (руб.):');
-            if (!currentPrice) return;
-            
-            const totalCost = prompt('Введите общую стоимость владения (руб.):');
-            if (!totalCost) return;
-            
-            const lifecycleData = JSON.parse(localStorage.getItem('plantLifecycle')) || [];
-            
-            lifecycleData.push({
-                purchaseDate,
-                purchasePrice,
-                currentPrice,
-                totalCost
-            });
-            
-            localStorage.setItem('plantLifecycle', JSON.stringify(lifecycleData));
-            loadLifecycleData();
-        }
-        
-        function deleteLifecycleEntry(index) {
-            if (confirm('Вы уверены, что хотите удалить эту запись?')) {
-                const lifecycleData = JSON.parse(localStorage.getItem('plantLifecycle')) || [];
-                lifecycleData.splice(index, 1);
-                localStorage.setItem('plantLifecycle', JSON.stringify(lifecycleData));
-                loadLifecycleData();
+            // Обновляем данные при переходе на вкладку
+            switch(tabName) {
+                case 'lifecycle':
+                    updateLifecycleDisplay();
+                    break;
+                case 'propagation':
+                    updatePropagationDisplay();
+                    break;
+                case 'fertilizers':
+                    updateFertilizersDisplay();
+                    break;
             }
         }
         
-        // Функции для работы с таблицами размножения
-        function loadPropagationData() {
-            const propagationData = JSON.parse(localStorage.getItem('plantPropagation')) || [];
-            const tableBody = document.getElementById('propagation-table-body');
-            
-            tableBody.innerHTML = '';
-            
-            if (propagationData.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="empty-state">
-                            <p>Нет данных о размножении растений</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            propagationData.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${entry.method}</td>
-                    <td>${entry.startDate}</td>
-                    <td>${entry.successRate}%</td>
-                    <td>${entry.motherPlant}</td>
-                    <td class="table-actions">
-                        <button class="btn btn-danger btn-sm delete-propagation" data-index="${index}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-            
-            // Добавляем обработчики удаления
-            document.querySelectorAll('.delete-propagation').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = this.getAttribute('data-index');
-                    deletePropagationEntry(index);
-                });
-            });
-        }
-        
-        function addPropagationEntry() {
-            const method = prompt('Введите метод размножения (черенкование, листом, семенами, делением):');
-            if (!method) return;
-            
-            const startDate = prompt('Введите дату начала (ГГГГ-ММ-ДД):');
-            if (!startDate) return;
-            
-            const successRate = prompt('Введите процент успеха (сколько из 10 черенков прижилось):');
-            if (!successRate) return;
-            
-            const motherPlant = prompt('Введите материнское растение:');
-            if (!motherPlant) return;
-            
-            const propagationData = JSON.parse(localStorage.getItem('plantPropagation')) || [];
-            
-            propagationData.push({
-                method,
-                startDate,
-                successRate,
-                motherPlant
-            });
-            
-            localStorage.setItem('plantPropagation', JSON.stringify(propagationData));
-            loadPropagationData();
-        }
-        
-        function deletePropagationEntry(index) {
-            if (confirm('Вы уверены, что хотите удалить эту запись?')) {
-                const propagationData = JSON.parse(localStorage.getItem('plantPropagation')) || [];
-                propagationData.splice(index, 1);
-                localStorage.setItem('plantPropagation', JSON.stringify(propagationData));
-                loadPropagationData();
-            }
-        }
-        
-        // Функция для добавления на рабочий стол
-        function addToHomeScreen() {
-            if (window.navigator.standalone) {
-                alert('Приложение уже добавлено на рабочий стол!');
-                return;
-            }
-            
-            if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
-                // Для PWA-приложений
-                alert('Используйте меню браузера, чтобы добавить приложение на рабочий стол.');
-            } else {
-                // Инструкции для пользователя
-                alert('Чтобы добавить приложение на рабочий стол:\n\n' +
-                      'На iOS: Нажмите кнопку "Поделиться" и выберите "На экран «Домой»"\n' +
-                      'На Android: Нажмите меню браузера и выберите "Добавить на главный экран"\n' +
-                      'На компьютере: Используйте меню браузера "Создать ярлык"');
-            }
-        }
-        
-        // Остальные функции приложения остаются без изменений
-        function updateCharts() {
-            const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            
-            if (entries.length === 0) {
-                // Если нет данных, показываем пустые графики
-                createEmptyCharts();
-                return;
-            }
-            
-            // Получаем данные для графиков
-            const chartData = prepareChartData(entries);
-            
-            // Создаем или обновляем графики
-            createHealthChart(chartData);
-            createActivityChart(chartData);
-        }
-        
-        function prepareChartData(entries) {
-            // Группируем записи по месяцам
-            const monthlyData = {};
-            
-            entries.forEach(entry => {
-                const date = new Date(entry.date);
-                const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-                const monthName = date.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
-                
-                if (!monthlyData[monthKey]) {
-                    monthlyData[monthKey] = {
-                        month: monthName,
-                        healthy: 0,
-                        problems: 0,
-                        care: 0,
-                        issues: 0
-                    };
-                }
-                
-                // Подсчет здоровья vs проблем
-                if (entry.status === '🌱' || entry.status === '🪴' || entry.status === '🌷') {
-                    monthlyData[monthKey].healthy++;
-                } else if (entry.status === '🥀' || entry.status === '💊' || entry.status === '🦠') {
-                    monthlyData[monthKey].problems++;
-                }
-                
-                // Подсчет активности ухода vs проблем
-                if (entry.category === 'Полив' || entry.category === 'Подкормка' || 
-                    entry.category === 'Обрезка' || entry.category === 'Пересадка') {
-                    monthlyData[monthKey].care++;
-                } else if (entry.category === 'Лечение') {
-                    monthlyData[monthKey].issues++;
-                }
-            });
-            
-            // Сортируем по месяцам
-            const sortedMonths = Object.keys(monthlyData).sort();
-            const labels = [];
-            const healthyData = [];
-            const problemsData = [];
-            const careData = [];
-            const issuesData = [];
-            
-            sortedMonths.forEach(monthKey => {
-                labels.push(monthlyData[monthKey].month);
-                healthyData.push(monthlyData[monthKey].healthy);
-                problemsData.push(monthlyData[monthKey].problems);
-                careData.push(monthlyData[monthKey].care);
-                issuesData.push(monthlyData[monthKey].issues);
-            });
-            
-            return {
-                labels,
-                healthyData,
-                problemsData,
-                careData,
-                issuesData
-            };
-        }
-        
-        function createHealthChart(chartData) {
-            const ctx = document.getElementById('healthChart').getContext('2d');
-            
-            // Уничтожаем предыдущий график, если он существует
-            if (healthChart) {
-                healthChart.destroy();
-            }
-            
-            healthChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [
-                        {
-                            label: 'Здоровые растения',
-                            data: chartData.healthyData,
-                            borderColor: '#27ae60',
-                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: 'Растения с проблемами',
-                            data: chartData.problemsData,
-                            borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Динамика здоровья растений'
-                        },
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Количество растений'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Месяц'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        function createActivityChart(chartData) {
-            const ctx = document.getElementById('activityChart').getContext('2d');
-            
-            // Уничтожаем предыдущий график, если он существует
-            if (activityChart) {
-                activityChart.destroy();
-            }
-            
-            activityChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [
-                        {
-                            label: 'Процедуры ухода',
-                            data: chartData.careData,
-                            borderColor: '#27ae60',
-                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: 'Зафиксированные проблемы',
-                            data: chartData.issuesData,
-                            borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Активность ухода за растениями'
-                        },
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Количество событий'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Месяц'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        function createEmptyCharts() {
-            const emptyData = {
-                labels: ['Нет данных'],
-                healthyData: [0],
-                problemsData: [0],
-                careData: [0],
-                issuesData: [0]
-            };
-            
-            createHealthChart(emptyData);
-            createActivityChart(emptyData);
-        }
-        
-        function loadPlants() {
-            const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+        // Функции для работы с растениями
+        function updatePlantsDisplay() {
             const plantsContainer = document.getElementById('plants-list-container');
-            
-            // Очистить контейнер
             plantsContainer.innerHTML = '';
             
-            if (plants.length === 0) {
+            if (Object.keys(plantsData).length === 0) {
                 plantsContainer.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-leaf"></i>
@@ -1692,25 +1535,23 @@
                 return;
             }
             
-            // Создать список растений
             const plantsList = document.createElement('div');
             plantsList.className = 'plants-list';
             
-            plants.forEach(plant => {
+            Object.keys(plantsData).forEach(plantId => {
+                const plant = plantsData[plantId];
                 const plantElement = document.createElement('div');
                 plantElement.className = 'plant-item';
                 plantElement.innerHTML = `
                     <div class="plant-name">${plant.name}</div>
                     <div class="plant-actions">
-                        <button class="btn btn-danger delete-plant" data-id="${plant.id}">
+                        <button class="btn btn-danger delete-plant" data-id="${plantId}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 `;
                 
-                // Добавить обработчик удаления растения
                 plantElement.querySelector('.delete-plant').addEventListener('click', function() {
-                    const plantId = this.getAttribute('data-id');
                     deletePlant(plantId);
                 });
                 
@@ -1720,17 +1561,14 @@
             plantsContainer.appendChild(plantsList);
         }
         
-        function loadPlantsToSelect() {
-            const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+        function updatePlantsSelect() {
             const plantSelect = document.getElementById('plant-name');
-            
             if (!plantSelect) return;
             
-            // Очистить выпадающий список
             plantSelect.innerHTML = '<option value="">Выберите растение</option>';
             
-            // Добавить растения в выпадающий список
-            plants.forEach(plant => {
+            Object.keys(plantsData).forEach(plantId => {
+                const plant = plantsData[plantId];
                 const option = document.createElement('option');
                 option.value = plant.name;
                 option.textContent = plant.name;
@@ -1738,7 +1576,22 @@
             });
         }
         
-        function addNewPlant() {
+        function updatePlantFilter() {
+            const plantFilter = document.getElementById('plant-filter-select');
+            if (!plantFilter) return;
+            
+            plantFilter.innerHTML = '<option value="">Все растения</option>';
+            
+            Object.keys(plantsData).forEach(plantId => {
+                const plant = plantsData[plantId];
+                const option = document.createElement('option');
+                option.value = plant.name;
+                option.textContent = plant.name;
+                plantFilter.appendChild(option);
+            });
+        }
+        
+        async function addNewPlant() {
             const plantName = document.getElementById('new-plant-name').value.trim();
             
             if (!plantName) {
@@ -1746,65 +1599,100 @@
                 return;
             }
             
-            // Получить существующие растения
-            let plants = JSON.parse(localStorage.getItem('myPlants')) || [];
-            
-            // Проверить, есть ли уже такое растение
-            if (plants.some(plant => plant.name.toLowerCase() === plantName.toLowerCase())) {
-                alert('Такое растение уже есть в вашем списке');
+            try {
+                // Проверка на существование растения
+                const existingPlant = Object.values(plantsData).find(plant => plant.name === plantName);
+                if (existingPlant) {
+                    alert('Такое растение уже есть в вашем списке');
+                    return;
+                }
+                
+                // Добавление нового растения
+                await database.ref('plants').push({
+                    name: plantName,
+                    createdAt: new Date().toISOString()
+                });
+                
+                document.getElementById('new-plant-name').value = '';
+                // Данные автоматически обновятся через слушатель реального времени
+            } catch (error) {
+                console.error("Ошибка добавления растения:", error);
+                alert("Ошибка добавления растения");
+            }
+        }
+        
+        async function deletePlant(plantId) {
+            if (!confirm('Вы уверены, что хотите удалить это растение? Все связанные записи также будут удалены.')) {
                 return;
             }
             
-            // Добавить новое растение
-            const newPlant = {
-                id: Date.now(),
-                name: plantName
-            };
-            
-            plants.push(newPlant);
-            
-            // Сохранить в localStorage
-            localStorage.setItem('myPlants', JSON.stringify(plants));
-            
-            // Очистить форму
-            document.getElementById('new-plant-name').value = '';
-            
-            // Обновить список растений
-            loadPlants();
-            loadPlantsToSelect();
-            
-            // Показать уведомление
-            alert('Растение успешно добавлено!');
-        }
-        
-        function deletePlant(plantId) {
-            if (confirm('Вы уверены, что хотите удалить это растение? Все связанные записи также будут удалены.')) {
-                // Удалить растение
-                let plants = JSON.parse(localStorage.getItem('myPlants')) || [];
-                const plantToDelete = plants.find(p => p.id == plantId);
-                plants = plants.filter(plant => plant.id != plantId);
-                localStorage.setItem('myPlants', JSON.stringify(plants));
+            try {
+                const plantName = plantsData[plantId].name;
                 
-                // Удалить связанные записи
-                let entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-                if (plantToDelete) {
-                    entries = entries.filter(entry => entry.name !== plantToDelete.name);
-                    localStorage.setItem('plantEntries', JSON.stringify(entries));
-                }
+                // Удаление растения
+                await database.ref('plants/' + plantId).remove();
                 
-                // Обновить интерфейс
-                loadPlants();
-                loadPlantsToSelect();
-                loadEntries();
-                updateDashboard();
+                // Удаление связанных записей
+                Object.keys(entriesData).forEach(entryId => {
+                    if (entriesData[entryId].name === plantName) {
+                        database.ref('entries/' + entryId).remove();
+                    }
+                });
+                
+                // Данные автоматически обновятся через слушатели реального времени
+            } catch (error) {
+                console.error("Ошибка удаления растения:", error);
+                alert("Ошибка удаления растения");
             }
         }
         
-        function savePlantEntry() {
-            // Получить данные из формы
+        // Функции для работы с записями
+        function updateEntriesDisplay() {
+            const entriesContainer = document.getElementById('all-entries-list');
+            entriesContainer.innerHTML = '';
+            
+            if (Object.keys(entriesData).length === 0) {
+                entriesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-book-open"></i>
+                        <p>Пока нет записей о растениях</p>
+                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let entriesArray = Object.keys(entriesData).map(entryId => {
+                return { id: entryId, ...entriesData[entryId] };
+            });
+            
+            // Сортировка по названию растения
+            entriesArray.sort((a, b) => a.name.localeCompare(b.name));
+            
+            // Отобразить все записи
+            entriesArray.forEach(entry => {
+                const entryElement = createEntryElement(entry);
+                entriesContainer.appendChild(entryElement);
+            });
+        }
+        
+        function filterEntriesByPlant(plantName) {
+            const entriesContainer = document.getElementById('all-entries-list');
+            const entries = entriesContainer.querySelectorAll('.entry-card');
+            
+            entries.forEach(entry => {
+                const entryPlantName = entry.querySelector('.entry-title').textContent;
+                if (!plantName || entryPlantName === plantName) {
+                    entry.style.display = 'flex';
+                } else {
+                    entry.style.display = 'none';
+                }
+            });
+        }
+        
+        async function savePlantEntry() {
             const entryId = document.getElementById('edit-entry-id').value;
-            const entry = {
-                id: entryId || Date.now(), // Используем существующий ID или создаем новый
+            const entryData = {
                 date: document.getElementById('plant-date').value,
                 name: document.getElementById('plant-name').value,
                 action: document.getElementById('plant-action').value,
@@ -1814,77 +1702,70 @@
                 spraying: document.getElementById('plant-spraying').checked,
                 feeding: document.getElementById('plant-feeding').checked,
                 treatment: document.getElementById('plant-treatment').checked,
-                temperature: document.getElementById('plant-temperature').value,
-                humidity: document.getElementById('plant-humidity').value
+                temperature: document.getElementById('plant-temperature').value || null,
+                humidity: document.getElementById('plant-humidity').value || null,
+                updatedAt: new Date().toISOString()
             };
             
-            // Проверить, что статус выбран
-            if (!entry.status) {
+            if (!entryData.status) {
                 alert('Пожалуйста, выберите статус растения');
                 return;
             }
             
-            // Получить существующие записи
-            let entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            
-            if (entryId) {
-                // Редактирование существующей записи
-                const index = entries.findIndex(e => e.id == entryId);
-                if (index !== -1) {
-                    entries[index] = entry;
+            try {
+                if (entryId) {
+                    // Обновление существующей записи
+                    await database.ref('entries/' + entryId).update(entryData);
+                } else {
+                    // Добавление новой записи
+                    entryData.createdAt = new Date().toISOString();
+                    await database.ref('entries').push(entryData);
                 }
-            } else {
-                // Добавить новую запись
-                entries.push(entry);
+                
+                // Очистка формы
+                document.getElementById('plant-form').reset();
+                document.querySelectorAll('.emoji-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                document.getElementById('edit-entry-id').value = '';
+                document.getElementById('cancel-edit').style.display = 'none';
+                
+                // Установка текущей даты
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('plant-date').value = today;
+                
+                // Автоматический переход на вкладку записей
+                switchTab('entries');
+                // Данные автоматически обновятся через слушатель реального времени
+                
+            } catch (error) {
+                console.error("Ошибка сохранения записи:", error);
+                alert("Ошибка сохранения записи");
             }
-            
-            // Сохранить в localStorage
-            localStorage.setItem('plantEntries', JSON.stringify(entries));
-            
-            // Очистить форму
-            document.getElementById('plant-form').reset();
-            document.querySelectorAll('.emoji-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            document.getElementById('edit-entry-id').value = '';
-            document.getElementById('cancel-edit').style.display = 'none';
-            
-            // Установить текущую дату по умолчанию
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('plant-date').value = today;
-            
-            // Показать уведомление
-            alert(entryId ? 'Запись успешно обновлена!' : 'Запись успешно сохранена!');
-            
-            // Переключиться на вкладку записей
-            switchTab('entries');
         }
         
-        function editEntry(entryId) {
-            // Получить запись по ID
-            const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            const entry = entries.find(e => e.id == entryId);
-            
+        async function editEntry(entryId) {
+            const entry = entriesData[entryId];
             if (!entry) {
                 alert('Запись не найдена');
                 return;
             }
             
-            // Заполнить форму данными записи
+            // Заполнение формы
             document.getElementById('plant-date').value = entry.date;
             document.getElementById('plant-name').value = entry.name;
             document.getElementById('plant-action').value = entry.action;
             document.getElementById('plant-category').value = entry.category;
             document.getElementById('plant-details').value = entry.details || '';
             document.getElementById('plant-status').value = entry.status;
-            document.getElementById('plant-spraying').checked = entry.spraying;
-            document.getElementById('plant-feeding').checked = entry.feeding;
-            document.getElementById('plant-treatment').checked = entry.treatment;
+            document.getElementById('plant-spraying').checked = entry.spraying || false;
+            document.getElementById('plant-feeding').checked = entry.feeding || false;
+            document.getElementById('plant-treatment').checked = entry.treatment || false;
             document.getElementById('plant-temperature').value = entry.temperature || '';
             document.getElementById('plant-humidity').value = entry.humidity || '';
-            document.getElementById('edit-entry-id').value = entry.id;
+            document.getElementById('edit-entry-id').value = entryId;
             
-            // Выбрать соответствующий эмодзи статуса
+            // Выбор эмодзи
             document.querySelectorAll('.emoji-option').forEach(opt => {
                 opt.classList.remove('selected');
                 if (opt.getAttribute('data-status') === entry.status) {
@@ -1892,15 +1773,11 @@
                 }
             });
             
-            // Показать кнопку отмены редактирования
             document.getElementById('cancel-edit').style.display = 'inline-flex';
-            
-            // Переключиться на вкладку добавления записи
             switchTab('add-entry');
         }
         
         function cancelEdit() {
-            // Очистить форму
             document.getElementById('plant-form').reset();
             document.querySelectorAll('.emoji-option').forEach(opt => {
                 opt.classList.remove('selected');
@@ -1908,57 +1785,59 @@
             document.getElementById('edit-entry-id').value = '';
             document.getElementById('cancel-edit').style.display = 'none';
             
-            // Установить текущую дату по умолчанию
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('plant-date').value = today;
             
-            // Переключиться на вкладку записей
             switchTab('entries');
         }
         
-        function loadEntries() {
-            const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            const entriesContainer = document.getElementById('all-entries-list');
-            const recentContainer = document.getElementById('recent-entries');
-            
-            // Очистить контейнеры
-            entriesContainer.innerHTML = '';
-            recentContainer.innerHTML = '';
-            
-            if (entries.length === 0) {
-                entriesContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-book-open"></i>
-                        <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
-                    </div>
-                `;
-                
-                recentContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-seedling"></i>
-                        <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
-                    </div>
-                `;
+        async function deleteEntry(entryId) {
+            if (!confirm('Вы уверены, что хотите удалить эту запись?')) {
                 return;
             }
             
-            // Отсортировать записи по дате (новые сначала)
-            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            try {
+                await database.ref('entries/' + entryId).remove();
+                // Данные автоматически обновятся через слушатель реального времени
+            } catch (error) {
+                console.error("Ошибка удаления записи:", error);
+                alert("Ошибка удаления записи");
+            }
+        }
+        
+        function updateDashboard() {
+            document.getElementById('total-entries').textContent = Object.keys(entriesData).length;
+            document.getElementById('total-plants').textContent = Object.keys(plantsData).length;
             
-            // Отобразить все записи
-            entries.forEach(entry => {
-                const entryElement = createEntryElement(entry);
-                entriesContainer.appendChild(entryElement);
+            // Подсчет растений в лечении
+            let sickPlants = 0;
+            let lastActivity = '-';
+            
+            Object.values(entriesData).forEach(entry => {
+                if (entry.status === '💊' || entry.status === '🦠') {
+                    sickPlants++;
+                }
+                
+                // Поиск последней активности
+                if (entry.date) {
+                    if (lastActivity === '-' || entry.date > lastActivity) {
+                        lastActivity = entry.date;
+                    }
+                }
             });
             
-            // Отобразить последние 5 записей на панели обзора
-            const recentEntries = entries.slice(0, 5);
-            recentEntries.forEach(entry => {
-                const entryElement = createEntryElement(entry);
-                recentContainer.appendChild(entryElement);
-            });
+            document.getElementById('sick-plants').textContent = sickPlants;
+            
+            if (lastActivity !== '-') {
+                const lastDate = new Date(lastActivity);
+                const formattedDate = lastDate.toLocaleDateString('ru-RU', {
+                    day: 'numeric',
+                    month: 'long'
+                });
+                document.getElementById('last-activity').textContent = formattedDate;
+            } else {
+                document.getElementById('last-activity').textContent = '-';
+            }
         }
         
         function createEntryElement(entry) {
@@ -1991,7 +1870,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="entry-details-list">
+                <div class="entry-details-grid">
                     <div class="entry-detail-item">
                         <div class="detail-icon">
                             <i class="fas fa-tasks"></i>
@@ -2025,7 +1904,7 @@
                             <i class="fas fa-thermometer-half"></i>
                         </div>
                         <div class="detail-content">
-                            <div class="detail-label">Температура</div>
+                            <div class="detail-label">Темп.</div>
                             <div class="detail-value">${entry.temperature}°C</div>
                         </div>
                     </div>
@@ -2036,26 +1915,14 @@
                             <i class="fas fa-tint"></i>
                         </div>
                         <div class="detail-content">
-                            <div class="detail-label">Влажность</div>
+                            <div class="detail-label">Влажн.</div>
                             <div class="detail-value">${entry.humidity}%</div>
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${entry.details ? `
-                    <div class="entry-detail-item">
-                        <div class="detail-icon">
-                            <i class="fas fa-sticky-note"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Детали</div>
-                            <div class="detail-value">${entry.details}</div>
                         </div>
                     </div>
                     ` : ''}
                 </div>
             `;
             
-            // Добавить обработчики для меню записи
             const menuBtn = entryElement.querySelector('.entry-menu-btn');
             const menu = entryElement.querySelector('.entry-menu');
             
@@ -2064,88 +1931,524 @@
                 menu.classList.toggle('show');
             });
             
-            // Добавить обработчики для кнопок редактирования и удаления
             entryElement.querySelector('.delete-entry').addEventListener('click', function() {
-                const entryId = this.getAttribute('data-id');
-                deleteEntry(entryId);
+                deleteEntry(entry.id);
             });
             
             entryElement.querySelector('.edit-entry').addEventListener('click', function() {
-                const entryId = this.getAttribute('data-id');
-                editEntry(entryId);
+                editEntry(entry.id);
             });
             
             return entryElement;
         }
         
-        function updateDashboard() {
-            const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+        // Функции для работы с дополнительными данными
+        function updateLifecycleDisplay() {
+            const tableBody = document.getElementById('lifecycle-table-body');
+            tableBody.innerHTML = '';
             
-            // Обновить статистику
-            document.getElementById('total-entries').textContent = entries.length;
-            document.getElementById('total-plants').textContent = plants.length;
+            if (Object.keys(lifecycleData).length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <p>Нет данных о жизненном цикле растений</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             
-            // Подсчитать растения в лечении
-            const sickPlants = entries.filter(entry => 
-                entry.status === '💊' || entry.status === '🦠'
-            ).length;
-            document.getElementById('sick-plants').textContent = sickPlants;
-            
-            // Показать последнюю активность
-            if (entries.length > 0) {
-                const lastEntry = entries.reduce((latest, entry) => {
-                    return new Date(entry.date) > new Date(latest.date) ? entry : latest;
+            Object.keys(lifecycleData).forEach(id => {
+                const data = lifecycleData[id];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.acquisitionDate || '-'}</td>
+                    <td>${data.purchaseCost || '-'} руб.</td>
+                    <td>${data.totalCost || '-'} руб.</td>
+                    <td class="table-actions">
+                        <button class="btn btn-sm btn-danger delete-lifecycle" data-id="${id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                row.querySelector('.delete-lifecycle').addEventListener('click', function() {
+                    deleteLifecycleEntry(id);
                 });
                 
-                const lastDate = new Date(lastEntry.date);
-                const formattedDate = lastDate.toLocaleDateString('ru-RU', {
-                    day: 'numeric',
-                    month: 'long'
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function updatePropagationDisplay() {
+            const tableBody = document.getElementById('propagation-table-body');
+            tableBody.innerHTML = '';
+            
+            if (Object.keys(propagationData).length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <p>Нет данных о размножении растений</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            Object.keys(propagationData).forEach(id => {
+                const data = propagationData[id];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.method || '-'}</td>
+                    <td>${data.startDate || '-'}</td>
+                    <td>${data.motherPlant || '-'}</td>
+                    <td class="table-actions">
+                        <button class="btn btn-sm btn-danger delete-propagation" data-id="${id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                row.querySelector('.delete-propagation').addEventListener('click', function() {
+                    deletePropagationEntry(id);
                 });
-                document.getElementById('last-activity').textContent = formattedDate;
-            } else {
-                document.getElementById('last-activity').textContent = '-';
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function updateFertilizersDisplay() {
+            const tableBody = document.getElementById('fertilizers-table-body');
+            tableBody.innerHTML = '';
+            
+            if (Object.keys(fertilizersData).length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <p>Нет данных об удобрениях</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            Object.keys(fertilizersData).forEach(id => {
+                const data = fertilizersData[id];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.fertilizer || '-'}</td>
+                    <td>${data.effect || '-'}</td>
+                    <td>${data.plant || '-'}</td>
+                    <td class="table-actions">
+                        <button class="btn btn-sm btn-danger delete-fertilizer" data-id="${id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                row.querySelector('.delete-fertilizer').addEventListener('click', function() {
+                    deleteFertilizerEntry(id);
+                });
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        async function addLifecycleEntry() {
+            const acquisitionDate = prompt('Введите дату приобретения (ГГГГ-ММ-ДД):');
+            const purchaseCost = prompt('Введите стоимость при покупке (руб.):');
+            const totalCost = prompt('Введите общую стоимость владения (руб.):');
+            
+            if (acquisitionDate && purchaseCost && totalCost) {
+                try {
+                    await database.ref('lifecycle').push({
+                        acquisitionDate,
+                        purchaseCost: parseFloat(purchaseCost),
+                        totalCost: parseFloat(totalCost),
+                        createdAt: new Date().toISOString()
+                    });
+                    // Данные автоматически обновятся через слушатель реального времени
+                } catch (error) {
+                    console.error("Ошибка добавления записи жизненного цикла:", error);
+                    alert("Ошибка добавления записи");
+                }
             }
         }
         
-        function deleteEntry(entryId) {
-            if (confirm('Вы уверены, что хотите удалить эту запись?')) {
-                let entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-                entries = entries.filter(entry => entry.id != entryId);
-                localStorage.setItem('plantEntries', JSON.stringify(entries));
-                loadEntries();
-                updateDashboard();
+        async function addPropagationEntry() {
+            const method = prompt('Введите метод размножения:');
+            const startDate = prompt('Введите дату начала (ГГГГ-ММ-ДД):');
+            const motherPlant = prompt('Введите название материнского растения:');
+            
+            if (method && startDate && motherPlant) {
+                try {
+                    await database.ref('propagation').push({
+                        method,
+                        startDate,
+                        motherPlant,
+                        createdAt: new Date().toISOString()
+                    });
+                    // Данные автоматически обновятся через слушатель реального времени
+                } catch (error) {
+                    console.error("Ошибка добавления записи размножения:", error);
+                    alert("Ошибка добавления записи");
+                }
             }
         }
         
-        function deleteEntriesByTime(timeframe) {
-            const now = new Date();
-            let cutoffDate;
+        async function addFertilizerEntry() {
+            const fertilizer = prompt('Введите название удобрения:');
+            const effect = prompt('Введите эффект от удобрения:');
+            const plant = prompt('Введите название растения:');
             
-            if (timeframe === 'week') {
-                cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            } else if (timeframe === 'month') {
-                cutoffDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            if (fertilizer && effect && plant) {
+                try {
+                    await database.ref('fertilizers').push({
+                        fertilizer,
+                        effect,
+                        plant,
+                        createdAt: new Date().toISOString()
+                    });
+                    // Данные автоматически обновятся через слушатель реального времени
+                } catch (error) {
+                    console.error("Ошибка добавления записи удобрения:", error);
+                    alert("Ошибка добавления записи");
+                }
             }
-            
-            let entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            const initialCount = entries.length;
-            
-            entries = entries.filter(entry => new Date(entry.date) > cutoffDate);
-            
-            localStorage.setItem('plantEntries', JSON.stringify(entries));
-            loadEntries();
-            updateDashboard();
-            
-            alert(`Удалено ${initialCount - entries.length} записей`);
         }
         
-        function deleteAllEntries() {
-            localStorage.removeItem('plantEntries');
-            loadEntries();
-            updateDashboard();
-            alert('Все записи удалены');
+        async function deleteLifecycleEntry(id) {
+            if (confirm('Удалить эту запись?')) {
+                try {
+                    await database.ref('lifecycle/' + id).remove();
+                    // Данные автоматически обновятся через слушатель реального времени
+                } catch (error) {
+                    console.error("Ошибка удаления записи жизненного цикла:", error);
+                    alert("Ошибка удаления записи");
+                }
+            }
+        }
+        
+        async function deletePropagationEntry(id) {
+            if (confirm('Удалить эту запись?')) {
+                try {
+                    await database.ref('propagation/' + id).remove();
+                    // Данные автоматически обновятся через слушатель реального времени
+                } catch (error) {
+                    console.error("Ошибка удаления записи размножения:", error);
+                    alert("Ошибка удаления записи");
+                }
+            }
+        }
+        
+        async function deleteFertilizerEntry(id) {
+            if (confirm('Удалить эту запись?')) {
+                try {
+                    await database.ref('fertilizers/' + id).remove();
+                    // Данные автоматически обновятся через слушатель реального времени
+                } catch (error) {
+                    console.error("Ошибка удаления записи удобрения:", error);
+                    alert("Ошибка удаления записи");
+                }
+            }
+        }
+        
+        // Функции для работы с графиками
+        function updateCharts() {
+            updateHealthChart();
+            updateActivityChart();
+        }
+        
+        function updateHealthChart() {
+            const ctx = document.getElementById('healthChart').getContext('2d');
+            
+            // Удаляем предыдущий график если существует
+            if (healthChart) {
+                healthChart.destroy();
+            }
+            
+            if (Object.keys(entriesData).length === 0) {
+                // Если нет данных, показываем пустой график
+                healthChart = createEmptyChart(ctx, 'line', 'Нет данных для отображения');
+                return;
+            }
+            
+            // Берем только последние 30 записей
+            const entriesArray = Object.values(entriesData)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 30);
+            
+            const datesMap = new Map();
+            
+            // Группируем данные по дате
+            entriesArray.forEach(entry => {
+                if (!datesMap.has(entry.date)) {
+                    datesMap.set(entry.date, { healthy: 0, problems: 0 });
+                }
+                
+                const dateData = datesMap.get(entry.date);
+                
+                // Определяем статус растения
+                if (entry.status === '🌱' || entry.status === '🪴' || entry.status === '🌷') {
+                    dateData.healthy++;
+                } else if (entry.status === '🥀' || entry.status === '💊' || entry.status === '🦠') {
+                    dateData.problems++;
+                }
+            });
+            
+            // Сортируем даты
+            const sortedDates = Array.from(datesMap.keys()).sort();
+            const healthyData = [];
+            const problemsData = [];
+            
+            sortedDates.forEach(date => {
+                const data = datesMap.get(date);
+                healthyData.push(data.healthy);
+                problemsData.push(data.problems);
+            });
+            
+            // Форматируем даты для отображения
+            const formattedDates = sortedDates.map(date => {
+                const d = new Date(date);
+                return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+            });
+            
+            healthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: formattedDates,
+                    datasets: [
+                        {
+                            label: '✅ Здоровые',
+                            data: healthyData,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '⚠️ Проблемы/❌ Критично',
+                            data: problemsData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Количество растений'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Дата'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateActivityChart() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            // Удаляем предыдущий график если существует
+            if (activityChart) {
+                activityChart.destroy();
+            }
+            
+            if (Object.keys(entriesData).length === 0) {
+                // Если нет данных, показываем пустой график
+                activityChart = createEmptyChart(ctx, 'line', 'Нет данных для отображения');
+                return;
+            }
+            
+            // Берем только последние 30 записей
+            const entriesArray = Object.values(entriesData)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 30);
+            
+            const datesMap = new Map();
+            
+            // Группируем данные по дате
+            entriesArray.forEach(entry => {
+                if (!datesMap.has(entry.date)) {
+                    datesMap.set(entry.date, { care: 0, problems: 0 });
+                }
+                
+                const dateData = datesMap.get(entry.date);
+                
+                // Определяем тип активности
+                if (entry.category === 'Полив' || entry.category === 'Подкормка' || 
+                    entry.category === 'Пересадка' || entry.category === 'Обрезка') {
+                    dateData.care++;
+                } else if (entry.category === 'Лечение' || entry.status === '💊' || 
+                           entry.status === '🦠' || entry.status === '🥀') {
+                    dateData.problems++;
+                }
+            });
+            
+            // Сортируем даты
+            const sortedDates = Array.from(datesMap.keys()).sort();
+            const careData = [];
+            const problemsData = [];
+            
+            sortedDates.forEach(date => {
+                const data = datesMap.get(date);
+                careData.push(data.care);
+                problemsData.push(data.problems);
+            });
+            
+            // Форматируем даты для отображения
+            const formattedDates = sortedDates.map(date => {
+                const d = new Date(date);
+                return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+            });
+            
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: formattedDates,
+                    datasets: [
+                        {
+                            label: 'Уход (полив, подкормка)',
+                            data: careData,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Проблемы (болезни, вредители)',
+                            data: problemsData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Количество событий'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Дата'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createEmptyChart(ctx, type, message) {
+            return new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: message,
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Функции для удаления записей
+        async function deleteEntriesByTime(period) {
+            try {
+                if (Object.keys(entriesData).length === 0) {
+                    alert('Нет записей для удаления');
+                    return;
+                }
+                
+                const now = new Date();
+                let cutoffDate;
+                
+                if (period === 'week') {
+                    cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                } else if (period === 'month') {
+                    cutoffDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                }
+                
+                const deletePromises = [];
+                
+                Object.keys(entriesData).forEach(entryId => {
+                    const entryDate = new Date(entriesData[entryId].date);
+                    if (entryDate >= cutoffDate) {
+                        deletePromises.push(database.ref('entries/' + entryId).remove());
+                    }
+                });
+                
+                await Promise.all(deletePromises);
+                // Данные автоматически обновятся через слушатель реального времени
+            } catch (error) {
+                console.error("Ошибка удаления записей:", error);
+                alert("Ошибка удаления записей");
+            }
+        }
+        
+        async function deleteAllEntries() {
+            try {
+                await database.ref('entries').remove();
+                // Данные автоматически обновятся через слушатель реального времени
+            } catch (error) {
+                console.error("Ошибка удаления всех записей:", error);
+                alert("Ошибка удаления записей");
+            }
+        }
+        
+        // Функция для добавления на рабочий стол
+        function addToHomeScreen() {
+            if (window.navigator.standalone) {
+                alert('Приложение уже добавлено на рабочий стол!');
+                return;
+            }
+            
+            alert('Чтобы добавить приложение на рабочий стол:\n\n' +
+                  'На iOS: Нажмите кнопку "Поделиться" и выберите "На экран «Домой»"\n' +
+                  'На Android: Нажмите меню браузера и выберите "Добавить на главный экран"\n' +
+                  'На компьютере: Используйте меню браузера "Создать ярлык"');
         }
     </script>
 </body>
