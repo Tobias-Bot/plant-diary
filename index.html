@@ -41,22 +41,42 @@
             padding: 20px;
         }
 
+        /* Узкий header с кнопкой настроек */
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 20px 0; /* Уменьшена высота */
+            padding: 10px 0;
             border-radius: 0 0 20px 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-            text-align: center;
-            color: white;
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
         }
 
-        h1 {
-            font-size: 2rem; /* Уменьшен размер */
-            margin-bottom: 5px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        .header-content {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .settings-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
 
         h2 {
@@ -157,6 +177,10 @@
             transition: all 0.3s ease;
             font-weight: 600;
             color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .entries-tab.active {
@@ -193,6 +217,145 @@
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Карточка записи с данными в виде списка */
+        .entry-card {
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .entry-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .entry-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .entry-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .entry-actions {
+            position: relative;
+        }
+
+        /* Увеличенная кнопка меню */
+        .entry-menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .entry-menu-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .entry-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 10;
+            display: none;
+            min-width: 150px;
+        }
+
+        .entry-menu.show {
+            display: block;
+        }
+
+        .entry-menu button {
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .entry-menu button:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Список данных в карточке записи */
+        .entry-details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .entry-detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+        }
+
+        .detail-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .detail-value {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .status-emoji {
+            font-size: 1.5rem;
         }
 
         .form-group {
@@ -322,116 +485,6 @@
             transform: translateY(-2px);
         }
 
-        .entry {
-            border-left: 4px solid var(--primary);
-            padding: 15px;
-            margin-bottom: 20px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .entry:hover {
-            transform: translateX(5px);
-        }
-
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .entry-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .entry-date {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .entry-actions {
-            position: relative;
-        }
-
-        /* Увеличенная кнопка меню */
-        .entry-menu-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 10px 15px; /* Увеличена область клика */
-            border-radius: 8px;
-            transition: background-color 0.3s;
-            min-width: 44px; /* Минимальный размер для удобного касания */
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .entry-menu-btn:hover {
-            background-color: var(--secondary);
-        }
-
-        .entry-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            z-index: 10;
-            display: none;
-            min-width: 150px;
-        }
-
-        .entry-menu.show {
-            display: block;
-        }
-
-        .entry-menu button {
-            width: 100%;
-            text-align: left;
-            padding: 8px 12px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .entry-menu button:hover {
-            background-color: var(--secondary);
-        }
-
-        .entry-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .entry-detail {
-            display: flex;
-            gap: 5px;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .status-emoji {
-            font-size: 1.5rem;
-        }
-
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -535,12 +588,8 @@
             }
             
             header {
-                padding: 15px 0;
-                margin-bottom: 30px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
+                padding: 8px 0;
+                margin-bottom: 25px;
             }
             
             .floating-tabs {
@@ -569,16 +618,16 @@
                 margin-bottom: 20px;
             }
             
+            .entry-card {
+                padding: 15px;
+            }
+            
             .entries-tabs {
                 flex-direction: column;
             }
             
             .entries-tab {
                 margin-bottom: 5px;
-            }
-            
-            .entry-details {
-                grid-template-columns: 1fr;
             }
             
             .stats {
@@ -626,13 +675,25 @@
             .floating-tabs {
                 bottom: 3%;
             }
+            
+            .entry-details-list {
+                gap: 8px;
+            }
+            
+            .entry-detail-item {
+                flex-direction: column;
+                gap: 5px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Узкий header с кнопкой настроек -->
     <header>
-        <div class="container">
-            <h1>Дневник растений</h1>
+        <div class="header-content">
+            <button class="settings-btn" id="header-settings-btn">
+                <i class="fas fa-cog"></i>
+            </button>
         </div>
     </header>
 
@@ -795,10 +856,18 @@
             <h2>Все записи</h2>
             
             <div class="entries-tabs">
-                <div class="entries-tab active" data-tab="all-entries">Все</div>
-                <div class="entries-tab" data-tab="analysis">Анализ</div>
-                <div class="entries-tab" data-tab="lifecycle">Жизненный цикл</div>
-                <div class="entries-tab" data-tab="propagation">Размножение и селекция</div>
+                <div class="entries-tab active" data-tab="all-entries">
+                    <i class="fas fa-list"></i>
+                    <span>Все</span>
+                </div>
+                <div class="entries-tab" data-tab="lifecycle">
+                    <i class="fas fa-recycle"></i>
+                    <span>Жизненный цикл</span>
+                </div>
+                <div class="entries-tab" data-tab="propagation">
+                    <i class="fas fa-dna"></i>
+                    <span>Размножение</span>
+                </div>
             </div>
             
             <!-- Вкладка "Все" -->
@@ -814,39 +883,11 @@
                 </div>
             </div>
             
-            <!-- Вкладка "Анализ" -->
-            <div id="analysis-tab" class="entries-content">
-                <div class="card">
-                    <h3>Анализ состояния растений</h3>
-                    <div class="charts-container">
-                        <div class="chart-card">
-                            <div class="chart-title">
-                                <span style="color: #27ae60">🟢</span> Здоровье vs 
-                                <span style="color: #e74c3c">🔴</span> Проблемы
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="healthChart"></canvas>
-                            </div>
-                        </div>
-                        
-                        <div class="chart-card">
-                            <div class="chart-title">
-                                <span style="color: #27ae60">🟢</span> Активность ухода vs 
-                                <span style="color: #e74c3c">🔴</span> Проблемы
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="activityChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Вкладка "Жизненный цикл" -->
             <div id="lifecycle-tab" class="entries-content">
                 <div class="card">
                     <div class="empty-state">
-                        <i class="fas fa-seedling"></i>
+                        <i class="fas fa-recycle"></i>
                         <p>Раздел "Жизненный цикл" в разработке</p>
                         <p>Здесь скоро появится информация о жизненных циклах ваших растений</p>
                     </div>
@@ -860,6 +901,32 @@
                         <i class="fas fa-dna"></i>
                         <p>Раздел "Размножение и селекция" в разработке</p>
                         <p>Здесь скоро появится информация о размножении и селекции растений</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Анализ (графики) -->
+        <div id="analysis" class="content-section">
+            <h2>Анализ состояния растений</h2>
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-title">
+                        <span style="color: #27ae60">🟢</span> Здоровье vs 
+                        <span style="color: #e74c3c">🔴</span> Проблемы
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">
+                        <span style="color: #27ae60">🟢</span> Активность ухода vs 
+                        <span style="color: #e74c3c">🔴</span> Проблемы
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="activityChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -909,9 +976,9 @@
             <i class="fas fa-book"></i>
             <span>Записи</span>
         </div>
-        <div class="tab" data-tab="settings">
-            <i class="fas fa-cog"></i>
-            <span>Настройки</span>
+        <div class="tab" data-tab="analysis">
+            <i class="fas fa-chart-line"></i>
+            <span>Анализ</span>
         </div>
     </div>
 
@@ -930,6 +997,11 @@
                     const targetTab = this.getAttribute('data-tab');
                     switchTab(targetTab);
                 });
+            });
+            
+            // Обработчик кнопки настроек в header
+            document.getElementById('header-settings-btn').addEventListener('click', function() {
+                switchTab('settings');
             });
             
             // Обработчики внутренних вкладок "Все записи"
@@ -1037,15 +1109,13 @@
             if (tabName === 'dashboard' || tabName === 'entries') {
                 loadEntries();
                 updateDashboard();
-                
-                // Если перешли на вкладку "Все записи", обновляем графики
-                if (tabName === 'entries') {
-                    setTimeout(updateCharts, 100);
-                }
             } else if (tabName === 'my-plants') {
                 loadPlants();
             } else if (tabName === 'add-entry') {
                 loadPlantsToSelect();
+            } else if (tabName === 'analysis') {
+                // Обновляем графики при переходе на вкладку анализа
+                setTimeout(updateCharts, 100);
             }
         }
         
@@ -1069,11 +1139,6 @@
             const activeTab = document.querySelector(`.entries-tab[data-tab="${tabName}"]`);
             if (activeTab) {
                 activeTab.classList.add('active');
-            }
-            
-            // Если перешли на вкладку "Анализ", обновляем графики
-            if (tabName === 'analysis') {
-                setTimeout(updateCharts, 100);
             }
         }
         
@@ -1291,7 +1356,6 @@
             createActivityChart(emptyData);
         }
         
-        // Остальные функции приложения остаются без изменений
         function loadPlants() {
             const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
             const plantsContainer = document.getElementById('plants-list-container');
@@ -1579,7 +1643,7 @@
             });
             
             const entryElement = document.createElement('div');
-            entryElement.className = 'entry';
+            entryElement.className = 'entry-card';
             entryElement.innerHTML = `
                 <div class="entry-header">
                     <div>
@@ -1600,33 +1664,68 @@
                         </div>
                     </div>
                 </div>
-                <div class="entry-details">
-                    <div class="entry-detail">
-                        <span class="detail-label">Событие:</span>
-                        <span>${entry.action}</span>
+                <div class="entry-details-list">
+                    <div class="entry-detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">Событие</div>
+                            <div class="detail-value">${entry.action}</div>
+                        </div>
                     </div>
-                    <div class="entry-detail">
-                        <span class="detail-label">Категория:</span>
-                        <span>${entry.category}</span>
+                    <div class="entry-detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">Категория</div>
+                            <div class="detail-value">${entry.category}</div>
+                        </div>
                     </div>
-                    <div class="entry-detail">
-                        <span class="detail-label">Статус:</span>
-                        <span class="status-emoji">${entry.status}</span>
+                    <div class="entry-detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">Статус</div>
+                            <div class="detail-value"><span class="status-emoji">${entry.status}</span></div>
+                        </div>
                     </div>
                     ${entry.temperature ? `
-                    <div class="entry-detail">
-                        <span class="detail-label">Температура:</span>
-                        <span>${entry.temperature}°C</span>
+                    <div class="entry-detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">Температура</div>
+                            <div class="detail-value">${entry.temperature}°C</div>
+                        </div>
                     </div>
                     ` : ''}
                     ${entry.humidity ? `
-                    <div class="entry-detail">
-                        <span class="detail-label">Влажность:</span>
-                        <span>${entry.humidity}%</span>
+                    <div class="entry-detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">Влажность</div>
+                            <div class="detail-value">${entry.humidity}%</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${entry.details ? `
+                    <div class="entry-detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">Детали</div>
+                            <div class="detail-value">${entry.details}</div>
+                        </div>
                     </div>
                     ` : ''}
                 </div>
-                ${entry.details ? `<p>${entry.details}</p>` : ''}
             `;
             
             // Добавить обработчики для меню записи
