@@ -60,7 +60,7 @@
         }
 
         .settings-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
             border: none;
             border-radius: 50%;
             width: 40px;
@@ -68,15 +68,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--dark);
             font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .settings-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: white;
             transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         h2 {
@@ -219,40 +221,47 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        /* Карточка записи с данными в виде списка */
+        /* Карточка записи в стиле Pinterest */
+        .entries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
         .entry-card {
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            margin-bottom: 20px;
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
         }
 
         .entry-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
         }
 
         .entry-header {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0f0f0;
         }
 
         .entry-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--dark);
+            margin-bottom: 5px;
         }
 
         .entry-date {
             color: #888;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .entry-actions {
@@ -263,13 +272,13 @@
         .entry-menu-btn {
             background: none;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 8px;
             transition: background-color 0.3s;
-            min-width: 44px;
-            min-height: 44px;
+            min-width: 40px;
+            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -316,6 +325,7 @@
 
         /* Список данных в карточке записи */
         .entry-details-list {
+            padding: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -325,17 +335,17 @@
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            padding: 8px 0;
         }
 
         .detail-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
             flex-shrink: 0;
+            margin-top: 2px;
         }
 
         .detail-content {
@@ -345,17 +355,18 @@
         .detail-label {
             font-weight: 600;
             color: var(--dark);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 2px;
         }
 
         .detail-value {
             color: var(--text);
-            font-size: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
 
         .status-emoji {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
 
         .form-group {
@@ -485,6 +496,11 @@
             transform: translateY(-2px);
         }
 
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -522,6 +538,44 @@
             font-size: 3rem;
             margin-bottom: 15px;
             color: var(--primary);
+        }
+
+        /* Стили для таблиц в разделах жизненного цикла и размножения */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
         }
 
         /* Стили для графиков */
@@ -618,8 +672,12 @@
                 margin-bottom: 20px;
             }
             
+            .entries-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .entry-card {
-                padding: 15px;
+                padding: 0;
             }
             
             .entries-tabs {
@@ -649,7 +707,7 @@
             }
             
             .entry-menu-btn {
-                padding: 12px 16px;
+                padding: 10px 14px;
             }
             
             .charts-container {
@@ -658,6 +716,11 @@
             
             .chart-wrapper {
                 height: 250px;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
             }
         }
 
@@ -766,6 +829,11 @@
             <div class="card">
                 <form id="plant-form">
                     <div class="form-group">
+                        <label for="plant-date">Дата события</label>
+                        <input type="date" id="plant-date" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="plant-name">Выберите растение</label>
                         <select id="plant-name" required>
                             <option value="">Выберите растение</option>
@@ -873,7 +941,7 @@
             <!-- Вкладка "Все" -->
             <div id="all-entries-tab" class="entries-content active">
                 <div class="card">
-                    <div id="all-entries-list">
+                    <div class="entries-grid" id="all-entries-list">
                         <div class="empty-state">
                             <i class="fas fa-book-open"></i>
                             <p>Пока нет записей о растениях</p>
@@ -886,22 +954,64 @@
             <!-- Вкладка "Жизненный цикл" -->
             <div id="lifecycle-tab" class="entries-content">
                 <div class="card">
-                    <div class="empty-state">
-                        <i class="fas fa-recycle"></i>
-                        <p>Раздел "Жизненный цикл" в разработке</p>
-                        <p>Здесь скоро появится информация о жизненных циклах ваших растений</p>
+                    <h3>Жизненный цикл растений</h3>
+                    
+                    <div class="form-group">
+                        <button id="add-lifecycle-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Добавить запись
+                        </button>
                     </div>
+                    
+                    <table class="data-table" id="lifecycle-table">
+                        <thead>
+                            <tr>
+                                <th>Дата приобретения</th>
+                                <th>Стоимость при покупке</th>
+                                <th>Текущая рыночная цена</th>
+                                <th>Общая стоимость владения</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lifecycle-table-body">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <p>Нет данных о жизненном цикле растений</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             
             <!-- Вкладка "Размножение и селекция" -->
             <div id="propagation-tab" class="entries-content">
                 <div class="card">
-                    <div class="empty-state">
-                        <i class="fas fa-dna"></i>
-                        <p>Раздел "Размножение и селекция" в разработке</p>
-                        <p>Здесь скоро появится информация о размножении и селекции растений</p>
+                    <h3>Размножение растений</h3>
+                    
+                    <div class="form-group">
+                        <button id="add-propagation-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Добавить запись
+                        </button>
                     </div>
+                    
+                    <table class="data-table" id="propagation-table">
+                        <thead>
+                            <tr>
+                                <th>Метод размножения</th>
+                                <th>Дата начала</th>
+                                <th>Процент успеха</th>
+                                <th>Материнское растение</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propagation-table-body">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <p>Нет данных о размножении растений</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -955,6 +1065,18 @@
                         <i class="fas fa-exclamation-triangle"></i> Удалить все записи
                     </button>
                 </div>
+            </div>
+            
+            <div class="card">
+                <h3>Добавить на рабочий стол</h3>
+                
+                <div class="form-group">
+                    <button id="add-to-home-screen" class="btn btn-primary">
+                        <i class="fas fa-plus-square"></i> Добавить на рабочий стол
+                    </button>
+                </div>
+                
+                <p class="small-text">Для добавления на рабочий стол используйте функцию "Добавить на главный экран" в меню браузера.</p>
             </div>
         </div>
     </div>
@@ -1065,6 +1187,20 @@
                 }
             });
             
+            // Обработчики кнопок добавления записей в таблицы
+            document.getElementById('add-lifecycle-btn').addEventListener('click', function() {
+                addLifecycleEntry();
+            });
+            
+            document.getElementById('add-propagation-btn').addEventListener('click', function() {
+                addPropagationEntry();
+            });
+            
+            // Обработчик кнопки добавления на рабочий стол
+            document.getElementById('add-to-home-screen').addEventListener('click', function() {
+                addToHomeScreen();
+            });
+            
             // Закрытие меню записей при клике вне меню
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.entry-actions')) {
@@ -1073,6 +1209,10 @@
                     });
                 }
             });
+            
+            // Установка текущей даты по умолчанию
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('plant-date').value = today;
         });
         
         // Функции приложения
@@ -1081,6 +1221,8 @@
             loadPlants();
             loadEntries();
             updateDashboard();
+            loadLifecycleData();
+            loadPropagationData();
         }
         
         function switchTab(tabName) {
@@ -1142,6 +1284,182 @@
             }
         }
         
+        // Функции для работы с таблицами жизненного цикла
+        function loadLifecycleData() {
+            const lifecycleData = JSON.parse(localStorage.getItem('plantLifecycle')) || [];
+            const tableBody = document.getElementById('lifecycle-table-body');
+            
+            tableBody.innerHTML = '';
+            
+            if (lifecycleData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <p>Нет данных о жизненном цикле растений</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            lifecycleData.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.purchaseDate}</td>
+                    <td>${entry.purchasePrice} руб.</td>
+                    <td>${entry.currentPrice} руб.</td>
+                    <td>${entry.totalCost} руб.</td>
+                    <td class="table-actions">
+                        <button class="btn btn-danger btn-sm delete-lifecycle" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Добавляем обработчики удаления
+            document.querySelectorAll('.delete-lifecycle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    deleteLifecycleEntry(index);
+                });
+            });
+        }
+        
+        function addLifecycleEntry() {
+            const purchaseDate = prompt('Введите дату приобретения:');
+            if (!purchaseDate) return;
+            
+            const purchasePrice = prompt('Введите стоимость при покупке (руб.):');
+            if (!purchasePrice) return;
+            
+            const currentPrice = prompt('Введите текущую рыночную цену (руб.):');
+            if (!currentPrice) return;
+            
+            const totalCost = prompt('Введите общую стоимость владения (руб.):');
+            if (!totalCost) return;
+            
+            const lifecycleData = JSON.parse(localStorage.getItem('plantLifecycle')) || [];
+            
+            lifecycleData.push({
+                purchaseDate,
+                purchasePrice,
+                currentPrice,
+                totalCost
+            });
+            
+            localStorage.setItem('plantLifecycle', JSON.stringify(lifecycleData));
+            loadLifecycleData();
+        }
+        
+        function deleteLifecycleEntry(index) {
+            if (confirm('Вы уверены, что хотите удалить эту запись?')) {
+                const lifecycleData = JSON.parse(localStorage.getItem('plantLifecycle')) || [];
+                lifecycleData.splice(index, 1);
+                localStorage.setItem('plantLifecycle', JSON.stringify(lifecycleData));
+                loadLifecycleData();
+            }
+        }
+        
+        // Функции для работы с таблицами размножения
+        function loadPropagationData() {
+            const propagationData = JSON.parse(localStorage.getItem('plantPropagation')) || [];
+            const tableBody = document.getElementById('propagation-table-body');
+            
+            tableBody.innerHTML = '';
+            
+            if (propagationData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <p>Нет данных о размножении растений</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            propagationData.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.method}</td>
+                    <td>${entry.startDate}</td>
+                    <td>${entry.successRate}%</td>
+                    <td>${entry.motherPlant}</td>
+                    <td class="table-actions">
+                        <button class="btn btn-danger btn-sm delete-propagation" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Добавляем обработчики удаления
+            document.querySelectorAll('.delete-propagation').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    deletePropagationEntry(index);
+                });
+            });
+        }
+        
+        function addPropagationEntry() {
+            const method = prompt('Введите метод размножения (черенкование, листом, семенами, делением):');
+            if (!method) return;
+            
+            const startDate = prompt('Введите дату начала (ГГГГ-ММ-ДД):');
+            if (!startDate) return;
+            
+            const successRate = prompt('Введите процент успеха (сколько из 10 черенков прижилось):');
+            if (!successRate) return;
+            
+            const motherPlant = prompt('Введите материнское растение:');
+            if (!motherPlant) return;
+            
+            const propagationData = JSON.parse(localStorage.getItem('plantPropagation')) || [];
+            
+            propagationData.push({
+                method,
+                startDate,
+                successRate,
+                motherPlant
+            });
+            
+            localStorage.setItem('plantPropagation', JSON.stringify(propagationData));
+            loadPropagationData();
+        }
+        
+        function deletePropagationEntry(index) {
+            if (confirm('Вы уверены, что хотите удалить эту запись?')) {
+                const propagationData = JSON.parse(localStorage.getItem('plantPropagation')) || [];
+                propagationData.splice(index, 1);
+                localStorage.setItem('plantPropagation', JSON.stringify(propagationData));
+                loadPropagationData();
+            }
+        }
+        
+        // Функция для добавления на рабочий стол
+        function addToHomeScreen() {
+            if (window.navigator.standalone) {
+                alert('Приложение уже добавлено на рабочий стол!');
+                return;
+            }
+            
+            if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
+                // Для PWA-приложений
+                alert('Используйте меню браузера, чтобы добавить приложение на рабочий стол.');
+            } else {
+                // Инструкции для пользователя
+                alert('Чтобы добавить приложение на рабочий стол:\n\n' +
+                      'На iOS: Нажмите кнопку "Поделиться" и выберите "На экран «Домой»"\n' +
+                      'На Android: Нажмите меню браузера и выберите "Добавить на главный экран"\n' +
+                      'На компьютере: Используйте меню браузера "Создать ярлык"');
+            }
+        }
+        
+        // Остальные функции приложения остаются без изменений
         function updateCharts() {
             const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
             
@@ -1487,7 +1805,7 @@
             const entryId = document.getElementById('edit-entry-id').value;
             const entry = {
                 id: entryId || Date.now(), // Используем существующий ID или создаем новый
-                date: new Date().toISOString(),
+                date: document.getElementById('plant-date').value,
                 name: document.getElementById('plant-name').value,
                 action: document.getElementById('plant-action').value,
                 category: document.getElementById('plant-category').value,
@@ -1531,6 +1849,10 @@
             document.getElementById('edit-entry-id').value = '';
             document.getElementById('cancel-edit').style.display = 'none';
             
+            // Установить текущую дату по умолчанию
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('plant-date').value = today;
+            
             // Показать уведомление
             alert(entryId ? 'Запись успешно обновлена!' : 'Запись успешно сохранена!');
             
@@ -1549,6 +1871,7 @@
             }
             
             // Заполнить форму данными записи
+            document.getElementById('plant-date').value = entry.date;
             document.getElementById('plant-name').value = entry.name;
             document.getElementById('plant-action').value = entry.action;
             document.getElementById('plant-category').value = entry.category;
@@ -1584,6 +1907,10 @@
             });
             document.getElementById('edit-entry-id').value = '';
             document.getElementById('cancel-edit').style.display = 'none';
+            
+            // Установить текущую дату по умолчанию
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('plant-date').value = today;
             
             // Переключиться на вкладку записей
             switchTab('entries');
