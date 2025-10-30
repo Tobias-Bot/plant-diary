@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Растительный дневник</title>
+    <title>Дневник растений</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -13,9 +13,10 @@
             --light: #f8f9fa;
             --dark: #5a7d7c;
             --text: #4a4a4a;
-            --success: #a8d5ba;
-            --warning: #f4b393;
-            --danger: #e6a4a4;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
         }
 
         * {
@@ -30,6 +31,7 @@
             color: var(--text);
             line-height: 1.6;
             transition: all 0.3s ease;
+            padding-bottom: 120px; /* Для плавающей панели вкладок */
         }
 
         .container {
@@ -40,50 +42,50 @@
 
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 30px 0;
+            padding: 20px 0; /* Уменьшена высота */
             border-radius: 0 0 20px 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             text-align: center;
             color: white;
             position: relative;
             overflow: hidden;
         }
 
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            opacity: 0.3;
-        }
-
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem; /* Уменьшен размер */
+            margin-bottom: 5px;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        h2 {
+            margin-bottom: 25px;
+            color: var(--dark);
         }
 
-        .tabs {
+        h3 {
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        /* Плавающая панель вкладок */
+        .floating-tabs {
+            position: fixed;
+            bottom: 10%; /* 10% от нижней границы экрана */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
+            align-items: center;
             background-color: white;
             border-radius: 50px;
-            padding: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            gap: 5px;
         }
 
         .tab {
-            padding: 12px 25px;
+            padding: 12px 18px;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -91,6 +93,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--dark);
         }
 
         .tab.active {
@@ -100,6 +103,29 @@
 
         .tab:hover:not(.active) {
             background-color: var(--secondary);
+        }
+
+        /* Центральная круглая кнопка */
+        .center-add-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success), var(--primary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            margin: 0 5px;
+        }
+
+        .center-add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         }
 
         .content-section {
@@ -168,8 +194,16 @@
             gap: 8px;
         }
 
-        .checkbox-item input {
-            width: auto;
+        /* Увеличенные чекбоксы */
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            cursor: pointer;
         }
 
         .emoji-selector {
@@ -210,12 +244,12 @@
         }
 
         .btn-primary {
-            background-color: var(--primary);
+            background-color: var(--success);
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #95c9aa;
+            background-color: #219653;
             transform: translateY(-2px);
         }
 
@@ -225,7 +259,8 @@
         }
 
         .btn-danger:hover {
-            background-color: #d98c8c;
+            background-color: #c0392b;
+            transform: translateY(-2px);
         }
 
         .btn-warning {
@@ -234,18 +269,23 @@
         }
 
         .btn-warning:hover {
-            background-color: #f2a07e;
+            background-color: #e67e22;
+            transform: translateY(-2px);
         }
 
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        .btn-info {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
         }
 
         .entry {
             border-left: 4px solid var(--primary);
-            padding-left: 15px;
+            padding: 15px;
             margin-bottom: 20px;
             position: relative;
             transition: all 0.3s ease;
@@ -258,7 +298,7 @@
         .entry-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 10px;
         }
 
@@ -271,6 +311,65 @@
         .entry-date {
             color: #888;
             font-size: 0.9rem;
+        }
+
+        .entry-actions {
+            position: relative;
+        }
+
+        /* Увеличенная кнопка меню */
+        .entry-menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 10px 15px; /* Увеличена область клика */
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            min-width: 44px; /* Минимальный размер для удобного касания */
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .entry-menu-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .entry-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 10;
+            display: none;
+            min-width: 150px;
+        }
+
+        .entry-menu.show {
+            display: block;
+        }
+
+        .entry-menu button {
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .entry-menu button:hover {
+            background-color: var(--secondary);
         }
 
         .entry-details {
@@ -302,7 +401,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 15px;
             padding: 20px;
             color: white;
@@ -333,18 +432,72 @@
             color: var(--primary);
         }
 
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #888;
-            font-size: 0.9rem;
+        /* Стили для списка растений */
+        .plants-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
+        .plant-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .plant-name {
+            font-weight: 600;
+        }
+
+        .plant-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Адаптация для мобильных устройств */
         @media (max-width: 768px) {
-            .tabs {
-                flex-direction: column;
-                border-radius: 15px;
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 15px 0;
+                margin-bottom: 30px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .floating-tabs {
+                bottom: 5%;
+                width: 90%;
+                justify-content: space-around;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .tab span {
+                display: none; /* Скрываем текст вкладок на мобильных */
+            }
+            
+            .center-add-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.4rem;
+            }
+            
+            .card {
+                padding: 20px;
+                margin-bottom: 20px;
             }
             
             .entry-details {
@@ -354,33 +507,51 @@
             .stats {
                 grid-template-columns: 1fr;
             }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .plants-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .entry-menu-btn {
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab {
+                padding: 8px 12px;
+            }
+            
+            .center-add-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .floating-tabs {
+                bottom: 3%;
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>Растительный дневник</h1>
-            <p class="subtitle">Отслеживайте уход за вашими растениями</p>
+            <h1>Дневник растений</h1>
         </div>
     </header>
 
     <div class="container">
-        <div class="tabs">
-            <div class="tab active" data-tab="dashboard">
-                <i class="fas fa-seedling"></i> Обзор
-            </div>
-            <div class="tab" data-tab="add-entry">
-                <i class="fas fa-plus-circle"></i> Новая запись
-            </div>
-            <div class="tab" data-tab="entries">
-                <i class="fas fa-book"></i> Все записи
-            </div>
-            <div class="tab" data-tab="settings">
-                <i class="fas fa-cog"></i> Настройки
-            </div>
-        </div>
-
         <!-- Панель обзора -->
         <div id="dashboard" class="content-section active">
             <h2>Обзор растений</h2>
@@ -409,7 +580,35 @@
                     <div class="empty-state">
                         <i class="fas fa-seedling"></i>
                         <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись на вкладке "Новая запись"</p>
+                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Мои растения -->
+        <div id="my-plants" class="content-section">
+            <h2>Мои растения</h2>
+            <div class="card">
+                <h3>Добавить новое растение</h3>
+                <form id="add-plant-form">
+                    <div class="form-group">
+                        <label for="new-plant-name">Название растения</label>
+                        <input type="text" id="new-plant-name" placeholder="Например, Фикус Бенджамина" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Добавить растение
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3>Список моих растений</h3>
+                <div id="plants-list-container">
+                    <div class="empty-state">
+                        <i class="fas fa-leaf"></i>
+                        <p>У вас пока нет растений</p>
+                        <p>Добавьте первое растение с помощью формы выше</p>
                     </div>
                 </div>
             </div>
@@ -421,8 +620,10 @@
             <div class="card">
                 <form id="plant-form">
                     <div class="form-group">
-                        <label for="plant-name">Название растения</label>
-                        <input type="text" id="plant-name" placeholder="Например, Фикус Бенджамина" required>
+                        <label for="plant-name">Выберите растение</label>
+                        <select id="plant-name" required>
+                            <option value="">Выберите растение</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -490,9 +691,16 @@
                         <input type="number" id="plant-humidity" placeholder="Например, 60">
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Сохранить запись
-                    </button>
+                    <input type="hidden" id="edit-entry-id" value="">
+                    
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Сохранить запись
+                        </button>
+                        <button type="button" id="cancel-edit" class="btn btn-warning" style="display: none;">
+                            <i class="fas fa-times"></i> Отменить редактирование
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -505,7 +713,7 @@
                     <div class="empty-state">
                         <i class="fas fa-book-open"></i>
                         <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись на вкладке "Новая запись"</p>
+                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
                     </div>
                 </div>
             </div>
@@ -516,7 +724,6 @@
             <h2>Настройки</h2>
             <div class="card">
                 <h3>Управление данными</h3>
-                <p>Здесь вы можете удалить старые записи или очистить все данные.</p>
                 
                 <div class="form-group">
                     <button id="delete-week" class="btn btn-warning">
@@ -539,11 +746,28 @@
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>Растительный дневник &copy; 2023 | С любовью к растениям</p>
+    <!-- Плавающая панель вкладок с центральной кнопкой -->
+    <div class="floating-tabs">
+        <div class="tab active" data-tab="dashboard">
+            <i class="fas fa-seedling"></i>
+            <span>Обзор</span>
         </div>
-    </footer>
+        <div class="tab" data-tab="my-plants">
+            <i class="fas fa-leaf"></i>
+            <span>Растения</span>
+        </div>
+        <button class="center-add-btn" id="center-add-btn">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="tab" data-tab="entries">
+            <i class="fas fa-book"></i>
+            <span>Записи</span>
+        </div>
+        <div class="tab" data-tab="settings">
+            <i class="fas fa-cog"></i>
+            <span>Настройки</span>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -558,6 +782,12 @@
                 });
             });
             
+            // Обработчик центральной кнопки
+            document.getElementById('center-add-btn').addEventListener('click', function() {
+                switchTab('add-entry');
+                loadPlantsToSelect();
+            });
+            
             // Обработчики эмодзи
             document.querySelectorAll('.emoji-option').forEach(option => {
                 option.addEventListener('click', function() {
@@ -569,10 +799,21 @@
                 });
             });
             
-            // Обработчик формы
+            // Обработчик формы добавления растения
+            document.getElementById('add-plant-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewPlant();
+            });
+            
+            // Обработчик формы записи
             document.getElementById('plant-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 savePlantEntry();
+            });
+            
+            // Обработчик отмены редактирования
+            document.getElementById('cancel-edit').addEventListener('click', function() {
+                cancelEdit();
             });
             
             // Обработчики кнопок удаления
@@ -593,15 +834,21 @@
                     deleteAllEntries();
                 }
             });
+            
+            // Закрытие меню записей при клике вне меню
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.entry-actions')) {
+                    document.querySelectorAll('.entry-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
         });
         
         // Функции приложения
         function initApp() {
-            // Установка текущей даты по умолчанию
-            const now = new Date();
-            document.getElementById('plant-date').value = now.toISOString().split('T')[0];
-            
             // Загрузка данных
+            loadPlants();
             loadEntries();
             updateDashboard();
         }
@@ -613,16 +860,153 @@
             });
             
             // Показать выбранную вкладку
-            document.getElementById(tabName).classList.add('active');
+            const targetSection = document.getElementById(tabName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
             
             // Обновить активную вкладку
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            
+            const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
             
             // Обновить данные, если необходимо
             if (tabName === 'dashboard' || tabName === 'entries') {
+                loadEntries();
+                updateDashboard();
+            } else if (tabName === 'my-plants') {
+                loadPlants();
+            } else if (tabName === 'add-entry') {
+                loadPlantsToSelect();
+            }
+        }
+        
+        function loadPlants() {
+            const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+            const plantsContainer = document.getElementById('plants-list-container');
+            
+            // Очистить контейнер
+            plantsContainer.innerHTML = '';
+            
+            if (plants.length === 0) {
+                plantsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-leaf"></i>
+                        <p>У вас пока нет растений</p>
+                        <p>Добавьте первое растение с помощью формы выше</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Создать список растений
+            const plantsList = document.createElement('div');
+            plantsList.className = 'plants-list';
+            
+            plants.forEach(plant => {
+                const plantElement = document.createElement('div');
+                plantElement.className = 'plant-item';
+                plantElement.innerHTML = `
+                    <div class="plant-name">${plant.name}</div>
+                    <div class="plant-actions">
+                        <button class="btn btn-danger delete-plant" data-id="${plant.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Добавить обработчик удаления растения
+                plantElement.querySelector('.delete-plant').addEventListener('click', function() {
+                    const plantId = this.getAttribute('data-id');
+                    deletePlant(plantId);
+                });
+                
+                plantsList.appendChild(plantElement);
+            });
+            
+            plantsContainer.appendChild(plantsList);
+        }
+        
+        function loadPlantsToSelect() {
+            const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+            const plantSelect = document.getElementById('plant-name');
+            
+            if (!plantSelect) return;
+            
+            // Очистить выпадающий список
+            plantSelect.innerHTML = '<option value="">Выберите растение</option>';
+            
+            // Добавить растения в выпадающий список
+            plants.forEach(plant => {
+                const option = document.createElement('option');
+                option.value = plant.name;
+                option.textContent = plant.name;
+                plantSelect.appendChild(option);
+            });
+        }
+        
+        function addNewPlant() {
+            const plantName = document.getElementById('new-plant-name').value.trim();
+            
+            if (!plantName) {
+                alert('Пожалуйста, введите название растения');
+                return;
+            }
+            
+            // Получить существующие растения
+            let plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+            
+            // Проверить, есть ли уже такое растение
+            if (plants.some(plant => plant.name.toLowerCase() === plantName.toLowerCase())) {
+                alert('Такое растение уже есть в вашем списке');
+                return;
+            }
+            
+            // Добавить новое растение
+            const newPlant = {
+                id: Date.now(),
+                name: plantName
+            };
+            
+            plants.push(newPlant);
+            
+            // Сохранить в localStorage
+            localStorage.setItem('myPlants', JSON.stringify(plants));
+            
+            // Очистить форму
+            document.getElementById('new-plant-name').value = '';
+            
+            // Обновить список растений
+            loadPlants();
+            loadPlantsToSelect();
+            
+            // Показать уведомление
+            alert('Растение успешно добавлено!');
+        }
+        
+        function deletePlant(plantId) {
+            if (confirm('Вы уверены, что хотите удалить это растение? Все связанные записи также будут удалены.')) {
+                // Удалить растение
+                let plants = JSON.parse(localStorage.getItem('myPlants')) || [];
+                const plantToDelete = plants.find(p => p.id == plantId);
+                plants = plants.filter(plant => plant.id != plantId);
+                localStorage.setItem('myPlants', JSON.stringify(plants));
+                
+                // Удалить связанные записи
+                let entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
+                if (plantToDelete) {
+                    entries = entries.filter(entry => entry.name !== plantToDelete.name);
+                    localStorage.setItem('plantEntries', JSON.stringify(entries));
+                }
+                
+                // Обновить интерфейс
+                loadPlants();
+                loadPlantsToSelect();
                 loadEntries();
                 updateDashboard();
             }
@@ -630,8 +1014,9 @@
         
         function savePlantEntry() {
             // Получить данные из формы
+            const entryId = document.getElementById('edit-entry-id').value;
             const entry = {
-                id: Date.now(), // Используем временную метку как ID
+                id: entryId || Date.now(), // Используем существующий ID или создаем новый
                 date: new Date().toISOString(),
                 name: document.getElementById('plant-name').value,
                 action: document.getElementById('plant-action').value,
@@ -654,8 +1039,16 @@
             // Получить существующие записи
             let entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
             
-            // Добавить новую запись
-            entries.push(entry);
+            if (entryId) {
+                // Редактирование существующей записи
+                const index = entries.findIndex(e => e.id == entryId);
+                if (index !== -1) {
+                    entries[index] = entry;
+                }
+            } else {
+                // Добавить новую запись
+                entries.push(entry);
+            }
             
             // Сохранить в localStorage
             localStorage.setItem('plantEntries', JSON.stringify(entries));
@@ -665,9 +1058,62 @@
             document.querySelectorAll('.emoji-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
+            document.getElementById('edit-entry-id').value = '';
+            document.getElementById('cancel-edit').style.display = 'none';
             
             // Показать уведомление
-            alert('Запись успешно сохранена!');
+            alert(entryId ? 'Запись успешно обновлена!' : 'Запись успешно сохранена!');
+            
+            // Переключиться на вкладку записей
+            switchTab('entries');
+        }
+        
+        function editEntry(entryId) {
+            // Получить запись по ID
+            const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
+            const entry = entries.find(e => e.id == entryId);
+            
+            if (!entry) {
+                alert('Запись не найдена');
+                return;
+            }
+            
+            // Заполнить форму данными записи
+            document.getElementById('plant-name').value = entry.name;
+            document.getElementById('plant-action').value = entry.action;
+            document.getElementById('plant-category').value = entry.category;
+            document.getElementById('plant-details').value = entry.details || '';
+            document.getElementById('plant-status').value = entry.status;
+            document.getElementById('plant-spraying').checked = entry.spraying;
+            document.getElementById('plant-feeding').checked = entry.feeding;
+            document.getElementById('plant-treatment').checked = entry.treatment;
+            document.getElementById('plant-temperature').value = entry.temperature || '';
+            document.getElementById('plant-humidity').value = entry.humidity || '';
+            document.getElementById('edit-entry-id').value = entry.id;
+            
+            // Выбрать соответствующий эмодзи статуса
+            document.querySelectorAll('.emoji-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.getAttribute('data-status') === entry.status) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            // Показать кнопку отмены редактирования
+            document.getElementById('cancel-edit').style.display = 'inline-flex';
+            
+            // Переключиться на вкладку добавления записи
+            switchTab('add-entry');
+        }
+        
+        function cancelEdit() {
+            // Очистить форму
+            document.getElementById('plant-form').reset();
+            document.querySelectorAll('.emoji-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('edit-entry-id').value = '';
+            document.getElementById('cancel-edit').style.display = 'none';
             
             // Переключиться на вкладку записей
             switchTab('entries');
@@ -687,7 +1133,7 @@
                     <div class="empty-state">
                         <i class="fas fa-book-open"></i>
                         <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись на вкладке "Новая запись"</p>
+                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
                     </div>
                 `;
                 
@@ -695,7 +1141,7 @@
                     <div class="empty-state">
                         <i class="fas fa-seedling"></i>
                         <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись на вкладке "Новая запись"</p>
+                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
                     </div>
                 `;
                 return;
@@ -730,8 +1176,23 @@
             entryElement.className = 'entry';
             entryElement.innerHTML = `
                 <div class="entry-header">
-                    <div class="entry-title">${entry.name}</div>
-                    <div class="entry-date">${formattedDate}</div>
+                    <div>
+                        <div class="entry-title">${entry.name}</div>
+                        <div class="entry-date">${formattedDate}</div>
+                    </div>
+                    <div class="entry-actions">
+                        <button class="entry-menu-btn">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="entry-menu">
+                            <button class="edit-entry" data-id="${entry.id}">
+                                <i class="fas fa-edit"></i> Редактировать
+                            </button>
+                            <button class="delete-entry" data-id="${entry.id}">
+                                <i class="fas fa-trash"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="entry-details">
                     <div class="entry-detail">
@@ -760,15 +1221,16 @@
                     ` : ''}
                 </div>
                 ${entry.details ? `<p>${entry.details}</p>` : ''}
-                <div class="actions">
-                    <button class="btn btn-primary edit-entry" data-id="${entry.id}">
-                        <i class="fas fa-edit"></i> Редактировать
-                    </button>
-                    <button class="btn btn-danger delete-entry" data-id="${entry.id}">
-                        <i class="fas fa-trash"></i> Удалить
-                    </button>
-                </div>
             `;
+            
+            // Добавить обработчики для меню записи
+            const menuBtn = entryElement.querySelector('.entry-menu-btn');
+            const menu = entryElement.querySelector('.entry-menu');
+            
+            menuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menu.classList.toggle('show');
+            });
             
             // Добавить обработчики для кнопок редактирования и удаления
             entryElement.querySelector('.delete-entry').addEventListener('click', function() {
@@ -776,9 +1238,9 @@
                 deleteEntry(entryId);
             });
             
-            // Пока не реализовано редактирование
             entryElement.querySelector('.edit-entry').addEventListener('click', function() {
-                alert('Редактирование записей будет доступно в следующей версии приложения!');
+                const entryId = this.getAttribute('data-id');
+                editEntry(entryId);
             });
             
             return entryElement;
@@ -786,13 +1248,11 @@
         
         function updateDashboard() {
             const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
+            const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
             
             // Обновить статистику
             document.getElementById('total-entries').textContent = entries.length;
-            
-            // Подсчитать уникальные растения
-            const uniquePlants = [...new Set(entries.map(entry => entry.name))];
-            document.getElementById('total-plants').textContent = uniquePlants.length;
+            document.getElementById('total-plants').textContent = plants.length;
             
             // Подсчитать растения в лечении
             const sickPlants = entries.filter(entry => 
