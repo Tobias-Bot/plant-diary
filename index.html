@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дневник растений</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #a8d5ba;
@@ -134,6 +135,44 @@
         }
 
         .content-section.active {
+            display: block;
+        }
+
+        /* Внутренние вкладки для "Все записи" */
+        .entries-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .entries-tab {
+            flex: 1;
+            padding: 12px 15px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .entries-tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .entries-tab:hover:not(.active) {
+            background-color: var(--secondary);
+        }
+
+        .entries-content {
+            display: none;
+        }
+
+        .entries-content.active {
             display: block;
         }
 
@@ -432,6 +471,36 @@
             color: var(--primary);
         }
 
+        /* Стили для графиков */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
         /* Стили для списка растений */
         .plants-list {
             display: grid;
@@ -500,6 +569,14 @@
                 margin-bottom: 20px;
             }
             
+            .entries-tabs {
+                flex-direction: column;
+            }
+            
+            .entries-tab {
+                margin-bottom: 5px;
+            }
+            
             .entry-details {
                 grid-template-columns: 1fr;
             }
@@ -524,6 +601,14 @@
             
             .entry-menu-btn {
                 padding: 12px 16px;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-wrapper {
+                height: 250px;
             }
         }
 
@@ -708,12 +793,73 @@
         <!-- Просмотр всех записей -->
         <div id="entries" class="content-section">
             <h2>Все записи</h2>
-            <div class="card">
-                <div id="all-entries">
+            
+            <div class="entries-tabs">
+                <div class="entries-tab active" data-tab="all-entries">Все</div>
+                <div class="entries-tab" data-tab="analysis">Анализ</div>
+                <div class="entries-tab" data-tab="lifecycle">Жизненный цикл</div>
+                <div class="entries-tab" data-tab="propagation">Размножение и селекция</div>
+            </div>
+            
+            <!-- Вкладка "Все" -->
+            <div id="all-entries-tab" class="entries-content active">
+                <div class="card">
+                    <div id="all-entries-list">
+                        <div class="empty-state">
+                            <i class="fas fa-book-open"></i>
+                            <p>Пока нет записей о растениях</p>
+                            <p>Добавьте первую запись, нажав на кнопку ниже</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка "Анализ" -->
+            <div id="analysis-tab" class="entries-content">
+                <div class="card">
+                    <h3>Анализ состояния растений</h3>
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <div class="chart-title">
+                                <span style="color: #27ae60">🟢</span> Здоровье vs 
+                                <span style="color: #e74c3c">🔴</span> Проблемы
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="healthChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <div class="chart-title">
+                                <span style="color: #27ae60">🟢</span> Активность ухода vs 
+                                <span style="color: #e74c3c">🔴</span> Проблемы
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка "Жизненный цикл" -->
+            <div id="lifecycle-tab" class="entries-content">
+                <div class="card">
                     <div class="empty-state">
-                        <i class="fas fa-book-open"></i>
-                        <p>Пока нет записей о растениях</p>
-                        <p>Добавьте первую запись, нажав на кнопку ниже</p>
+                        <i class="fas fa-seedling"></i>
+                        <p>Раздел "Жизненный цикл" в разработке</p>
+                        <p>Здесь скоро появится информация о жизненных циклах ваших растений</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка "Размножение и селекция" -->
+            <div id="propagation-tab" class="entries-content">
+                <div class="card">
+                    <div class="empty-state">
+                        <i class="fas fa-dna"></i>
+                        <p>Раздел "Размножение и селекция" в разработке</p>
+                        <p>Здесь скоро появится информация о размножении и селекции растений</p>
                     </div>
                 </div>
             </div>
@@ -770,6 +916,10 @@
     </div>
 
     <script>
+        // Глобальные переменные для графиков
+        let healthChart = null;
+        let activityChart = null;
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Инициализация приложения
             initApp();
@@ -779,6 +929,14 @@
                 tab.addEventListener('click', function() {
                     const targetTab = this.getAttribute('data-tab');
                     switchTab(targetTab);
+                });
+            });
+            
+            // Обработчики внутренних вкладок "Все записи"
+            document.querySelectorAll('.entries-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    switchEntriesTab(targetTab);
                 });
             });
             
@@ -879,6 +1037,11 @@
             if (tabName === 'dashboard' || tabName === 'entries') {
                 loadEntries();
                 updateDashboard();
+                
+                // Если перешли на вкладку "Все записи", обновляем графики
+                if (tabName === 'entries') {
+                    setTimeout(updateCharts, 100);
+                }
             } else if (tabName === 'my-plants') {
                 loadPlants();
             } else if (tabName === 'add-entry') {
@@ -886,6 +1049,249 @@
             }
         }
         
+        function switchEntriesTab(tabName) {
+            // Скрыть все внутренние вкладки
+            document.querySelectorAll('.entries-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            const targetContent = document.getElementById(`${tabName}-tab`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+            
+            // Обновить активную вкладку
+            document.querySelectorAll('.entries-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const activeTab = document.querySelector(`.entries-tab[data-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            // Если перешли на вкладку "Анализ", обновляем графики
+            if (tabName === 'analysis') {
+                setTimeout(updateCharts, 100);
+            }
+        }
+        
+        function updateCharts() {
+            const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
+            
+            if (entries.length === 0) {
+                // Если нет данных, показываем пустые графики
+                createEmptyCharts();
+                return;
+            }
+            
+            // Получаем данные для графиков
+            const chartData = prepareChartData(entries);
+            
+            // Создаем или обновляем графики
+            createHealthChart(chartData);
+            createActivityChart(chartData);
+        }
+        
+        function prepareChartData(entries) {
+            // Группируем записи по месяцам
+            const monthlyData = {};
+            
+            entries.forEach(entry => {
+                const date = new Date(entry.date);
+                const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                const monthName = date.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+                
+                if (!monthlyData[monthKey]) {
+                    monthlyData[monthKey] = {
+                        month: monthName,
+                        healthy: 0,
+                        problems: 0,
+                        care: 0,
+                        issues: 0
+                    };
+                }
+                
+                // Подсчет здоровья vs проблем
+                if (entry.status === '🌱' || entry.status === '🪴' || entry.status === '🌷') {
+                    monthlyData[monthKey].healthy++;
+                } else if (entry.status === '🥀' || entry.status === '💊' || entry.status === '🦠') {
+                    monthlyData[monthKey].problems++;
+                }
+                
+                // Подсчет активности ухода vs проблем
+                if (entry.category === 'Полив' || entry.category === 'Подкормка' || 
+                    entry.category === 'Обрезка' || entry.category === 'Пересадка') {
+                    monthlyData[monthKey].care++;
+                } else if (entry.category === 'Лечение') {
+                    monthlyData[monthKey].issues++;
+                }
+            });
+            
+            // Сортируем по месяцам
+            const sortedMonths = Object.keys(monthlyData).sort();
+            const labels = [];
+            const healthyData = [];
+            const problemsData = [];
+            const careData = [];
+            const issuesData = [];
+            
+            sortedMonths.forEach(monthKey => {
+                labels.push(monthlyData[monthKey].month);
+                healthyData.push(monthlyData[monthKey].healthy);
+                problemsData.push(monthlyData[monthKey].problems);
+                careData.push(monthlyData[monthKey].care);
+                issuesData.push(monthlyData[monthKey].issues);
+            });
+            
+            return {
+                labels,
+                healthyData,
+                problemsData,
+                careData,
+                issuesData
+            };
+        }
+        
+        function createHealthChart(chartData) {
+            const ctx = document.getElementById('healthChart').getContext('2d');
+            
+            // Уничтожаем предыдущий график, если он существует
+            if (healthChart) {
+                healthChart.destroy();
+            }
+            
+            healthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        {
+                            label: 'Здоровые растения',
+                            data: chartData.healthyData,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Растения с проблемами',
+                            data: chartData.problemsData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Динамика здоровья растений'
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Количество растений'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Месяц'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createActivityChart(chartData) {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            // Уничтожаем предыдущий график, если он существует
+            if (activityChart) {
+                activityChart.destroy();
+            }
+            
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        {
+                            label: 'Процедуры ухода',
+                            data: chartData.careData,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Зафиксированные проблемы',
+                            data: chartData.issuesData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Активность ухода за растениями'
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Количество событий'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Месяц'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createEmptyCharts() {
+            const emptyData = {
+                labels: ['Нет данных'],
+                healthyData: [0],
+                problemsData: [0],
+                careData: [0],
+                issuesData: [0]
+            };
+            
+            createHealthChart(emptyData);
+            createActivityChart(emptyData);
+        }
+        
+        // Остальные функции приложения остаются без изменений
         function loadPlants() {
             const plants = JSON.parse(localStorage.getItem('myPlants')) || [];
             const plantsContainer = document.getElementById('plants-list-container');
@@ -1121,7 +1527,7 @@
         
         function loadEntries() {
             const entries = JSON.parse(localStorage.getItem('plantEntries')) || [];
-            const entriesContainer = document.getElementById('all-entries');
+            const entriesContainer = document.getElementById('all-entries-list');
             const recentContainer = document.getElementById('recent-entries');
             
             // Очистить контейнеры
