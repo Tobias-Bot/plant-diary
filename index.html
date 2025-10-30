@@ -1287,9 +1287,7 @@
             
             document.getElementById('center-add-btn').addEventListener('click', function() {
                 switchTab('add-entry');
-                if (!dataLoaded.plants) {
-                    loadPlantsToSelect();
-                }
+                updatePlantsSelect(); // Исправлено: заменил loadPlantsToSelect на updatePlantsSelect
             });
             
             document.querySelectorAll('.emoji-option').forEach(option => {
@@ -1666,8 +1664,8 @@
                 return { id: entryId, ...entriesData[entryId] };
             });
             
-            // Сортировка по названию растения
-            entriesArray.sort((a, b) => a.name.localeCompare(b.name));
+            // Сортировка по дате (самые новые сначала) - ИСПРАВЛЕНО
+            entriesArray.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             // Отобразить все записи
             entriesArray.forEach(entry => {
