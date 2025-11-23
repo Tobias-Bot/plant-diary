@@ -886,6 +886,50 @@
             margin-top: 20px;
         }
 
+        .modal-body {
+    padding: 0 0 20px 0;
+}
+
+.entry-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-text {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    margin-top: 5px;
+    line-height: 1.5;
+}
+
+.additional-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.additional-detail {
+    background-color: var(--secondary);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.additional-detail i {
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -1384,6 +1428,45 @@
         </div>
     </div>
 
+<!-- Модальное окно для просмотра деталей записи -->
+<div id="entry-details-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Детали записи</h3>
+            <button class="modal-close" id="close-entry-details-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="entry-details-content">
+                <div class="detail-item">
+                    <strong>Растение:</strong> <span id="detail-plant-name"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Дата:</strong> <span id="detail-date"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Событие:</strong> <span id="detail-action"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Категория:</strong> <span id="detail-category"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Статус:</strong> <span id="detail-status"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Детали:</strong>
+                    <div id="detail-details" class="detail-text"></div>
+                </div>
+                <div id="detail-additional" class="additional-details"></div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-primary" id="close-details-modal">Закрыть</button>
+        </div>
+    </div>
+</div>
+    
     <!-- Модальное окно для редактирования растения -->
     <div id="edit-plant-modal" class="modal">
         <div class="modal-content">
@@ -1702,6 +1785,22 @@
                     });
                 }
             });
+
+            // Обработчики для модального окна деталей
+document.getElementById('close-entry-details-modal').addEventListener('click', function() {
+    closeEntryDetailsModal();
+});
+
+document.getElementById('close-details-modal').addEventListener('click', function() {
+    closeEntryDetailsModal();
+});
+
+// Закрытие модального окна при клике вне его
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal')) {
+        closeEntryDetailsModal();
+    }
+});
             
             // Установка текущей даты
             const today = new Date().toISOString().split('T')[0];
@@ -1716,6 +1815,10 @@
             // Настройка слушателей реального времени для автоматического обновления
             setupRealtimeListeners();
         });
+
+        function closeEntryDetailsModal() {
+    document.getElementById('entry-details-modal').classList.remove('active');
+}
 
         // Настройка слушателей реального времени для Firebase
         function setupRealtimeListeners() {
@@ -2317,106 +2420,211 @@
         }
         
         function createEntryElement(entry) {
-            const entryDate = new Date(entry.date);
-            const formattedDate = entryDate.toLocaleDateString('ru-RU', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            
-            const entryElement = document.createElement('div');
-            entryElement.className = 'entry-card';
-            entryElement.innerHTML = `
-                <div class="entry-header">
-                    <div>
-                        <div class="entry-title">${entry.name}</div>
-                        <div class="entry-date">${formattedDate}</div>
-                    </div>
-                    <div class="entry-actions">
-                        <button class="entry-menu-btn">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div class="entry-menu">
-                            <button class="edit-entry" data-id="${entry.id}">
-                                <i class="fas fa-edit"></i> Редактировать
-                            </button>
-                            <button class="delete-entry" data-id="${entry.id}">
-                                <i class="fas fa-trash"></i> Удалить
-                            </button>
-                        </div>
-                    </div>
+    const entryDate = new Date(entry.date);
+    const formattedDate = entryDate.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    
+    const entryElement = document.createElement('div');
+    entryElement.className = 'entry-card';
+    entryElement.setAttribute('data-entry-id', entry.id);
+    entryElement.innerHTML = `
+        <div class="entry-header">
+            <div>
+                <div class="entry-title">${entry.name}</div>
+                <div class="entry-date">${formattedDate}</div>
+            </div>
+            <div class="entry-actions">
+                <button class="entry-menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="entry-menu">
+                    <button class="edit-entry" data-id="${entry.id}">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </button>
+                    <button class="delete-entry" data-id="${entry.id}">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
                 </div>
-                <div class="entry-details-grid">
-                    <div class="entry-detail-item">
-                        <div class="detail-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Событие</div>
-                            <div class="detail-value">${entry.action}</div>
-                        </div>
-                    </div>
-                    <div class="entry-detail-item">
-                        <div class="detail-icon">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Категория</div>
-                            <div class="detail-value">${entry.category}</div>
-                        </div>
-                    </div>
-                    <div class="entry-detail-item">
-                        <div class="detail-icon">
-                            <i class="fas fa-heartbeat"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Статус</div>
-                            <div class="detail-value"><span class="status-emoji">${entry.status}</span></div>
-                        </div>
-                    </div>
-                    ${entry.temperature ? `
-                    <div class="entry-detail-item">
-                        <div class="detail-icon">
-                            <i class="fas fa-thermometer-half"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Темп.</div>
-                            <div class="detail-value">${entry.temperature}°C</div>
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${entry.humidity ? `
-                    <div class="entry-detail-item">
-                        <div class="detail-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Влажн.</div>
-                            <div class="detail-value">${entry.humidity}%</div>
-                        </div>
-                    </div>
-                    ` : ''}
+            </div>
+        </div>
+        <div class="entry-details-grid">
+            <div class="entry-detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-label">Событие</div>
+                    <div class="detail-value">${entry.action}</div>
+                </div>
+            </div>
+            <div class="entry-detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-label">Категория</div>
+                    <div class="detail-value">${entry.category}</div>
+                </div>
+            </div>
+            <div class="entry-detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-label">Статус</div>
+                    <div class="detail-value"><span class="status-emoji">${entry.status}</span></div>
+                </div>
+            </div>
+            ${entry.temperature ? `
+            <div class="entry-detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-thermometer-half"></i>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-label">Темп.</div>
+                    <div class="detail-value">${entry.temperature}°C</div>
+                </div>
+            </div>
+            ` : ''}
+            ${entry.humidity ? `
+            <div class="entry-detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-label">Влажн.</div>
+                    <div class="detail-value">${entry.humidity}%</div>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    
+    const menuBtn = entryElement.querySelector('.entry-menu-btn');
+    const menu = entryElement.querySelector('.entry-menu');
+    
+    menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.classList.toggle('show');
+    });
+    
+    // Обработчик клика по карточке для показа деталей
+    entryElement.addEventListener('click', function(e) {
+        // Не открываем детали если кликнули на меню действий
+        if (!e.target.closest('.entry-actions')) {
+            showEntryDetails(entry.id);
+        }
+    });
+    
+    entryElement.querySelector('.delete-entry').addEventListener('click', function() {
+        deleteEntry(entry.id);
+    });
+    
+    entryElement.querySelector('.edit-entry').addEventListener('click', function() {
+        editEntry(entry.id);
+    });
+    
+    return entryElement;
+}
+
+        function showEntryDetails(entryId) {
+    const entry = entriesData[entryId];
+    if (!entry) {
+        alert('Запись не найдена');
+        return;
+    }
+    
+    const entryDate = new Date(entry.date);
+    const formattedDate = entryDate.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    
+    // Заполняем модальное окно данными
+    document.getElementById('detail-plant-name').textContent = entry.name;
+    document.getElementById('detail-date').textContent = formattedDate;
+    document.getElementById('detail-action').textContent = entry.action;
+    document.getElementById('detail-category').textContent = entry.category;
+    document.getElementById('detail-status').innerHTML = `<span class="status-emoji">${entry.status}</span>`;
+    
+    // Детали записи
+    const detailsElement = document.getElementById('detail-details');
+    if (entry.details && entry.details.trim() !== '') {
+        detailsElement.textContent = entry.details;
+        detailsElement.style.display = 'block';
+    } else {
+        detailsElement.textContent = 'Детали не указаны';
+        detailsElement.style.display = 'block';
+    }
+    
+    // Дополнительная информация
+    const additionalElement = document.getElementById('detail-additional');
+    additionalElement.innerHTML = '';
+    
+    if (entry.temperature || entry.humidity || entry.spraying || entry.feeding || entry.treatment) {
+        let additionalHTML = '<div class="additional-details">';
+        
+        if (entry.temperature) {
+            additionalHTML += `
+                <div class="additional-detail">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>Температура</div>
+                    <strong>${entry.temperature}°C</strong>
                 </div>
             `;
-            
-            const menuBtn = entryElement.querySelector('.entry-menu-btn');
-            const menu = entryElement.querySelector('.entry-menu');
-            
-            menuBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                menu.classList.toggle('show');
-            });
-            
-            entryElement.querySelector('.delete-entry').addEventListener('click', function() {
-                deleteEntry(entry.id);
-            });
-            
-            entryElement.querySelector('.edit-entry').addEventListener('click', function() {
-                editEntry(entry.id);
-            });
-            
-            return entryElement;
         }
+        
+        if (entry.humidity) {
+            additionalHTML += `
+                <div class="additional-detail">
+                    <i class="fas fa-tint"></i>
+                    <div>Влажность</div>
+                    <strong>${entry.humidity}%</strong>
+                </div>
+            `;
+        }
+        
+        if (entry.spraying) {
+            additionalHTML += `
+                <div class="additional-detail">
+                    <i class="fas fa-spray-can"></i>
+                    <div>Опрыскивание</div>
+                    <strong>✓</strong>
+                </div>
+            `;
+        }
+        
+        if (entry.feeding) {
+            additionalHTML += `
+                <div class="additional-detail">
+                    <i class="fas fa-flask"></i>
+                    <div>Подкормка</div>
+                    <strong>✓</strong>
+                </div>
+            `;
+        }
+        
+        if (entry.treatment) {
+            additionalHTML += `
+                <div class="additional-detail">
+                    <i class="fas fa-heartbeat"></i>
+                    <div>Обработка</div>
+                    <strong>✓</strong>
+                </div>
+            `;
+        }
+        
+        additionalHTML += '</div>';
+        additionalElement.innerHTML = additionalHTML;
+    }
+    
+    // Показываем модальное окно
+    document.getElementById('entry-details-modal').classList.add('active');
+}
         
         // Функции для работы с дополнительными данными
         function updatePropagationDisplay() {
